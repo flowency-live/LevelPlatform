@@ -1,0 +1,94 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --level-primary: 172 55% 35%;
+  --level-primary-dark: 172 55% 25%;
+  --level-primary-light: 172 55% 45%;
+  --level-accent: 175 70% 50%;
+  --level-accent-light: 175 70% 65%;
+  --level-background: 180 25% 10%;
+  --level-background-light: 180 20% 15%;
+  --level-card: 180 20% 15%;
+  --level-foreground: 0 0% 98%;
+  --level-muted-foreground: 180 10% 60%;
+  --level-muted: 180 15% 20%;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: hsl(var(--level-background));
+  color: hsl(var(--level-foreground));
+  min-height: 100vh;
+}
+
+@layer utilities {
+  .level-gradient-text {
+    background: linear-gradient(135deg, hsl(175 70% 50%) 0%, hsl(172 55% 45%) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .level-gradient-bg {
+    background: linear-gradient(135deg, hsl(172 55% 35%) 0%, hsl(175 70% 40%) 100%);
+  }
+
+  .level-card {
+    background: hsl(var(--level-card));
+    border: 1px solid hsl(172 55% 35% / 0.2);
+    border-radius: 0.75rem;
+  }
+
+  .level-card-hover {
+    transition: all 0.3s ease;
+  }
+
+  .level-card-hover:hover {
+    transform: translateY(-4px);
+    border-color: hsl(172 55% 35% / 0.4);
+    box-shadow: 0 20px 40px -12px hsl(172 55% 35% / 0.25);
+  }
+
+  .level-glow {
+    box-shadow: 0 0 60px hsl(172 55% 35% / 0.3);
+  }
+}
+
+@layer components {
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .section-padding {
+    padding: 5rem 0;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, hsl(172 55% 35%) 0%, hsl(175 70% 40%) 100%);
+    color: white;
+    padding: 0.875rem 2rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px -8px hsl(172 55% 35% / 0.5);
+  }
+}
