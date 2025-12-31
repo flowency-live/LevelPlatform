@@ -65,19 +65,16 @@ const FeaturesSection = () => {
           {features.map((feature) => (
             <div
               key={feature.title}
-              className="group relative p-7 rounded-2xl border-2 bg-level-card transition-all duration-300 hover:translate-y-[-4px]"
+              className="group relative p-8 border-2 bg-level-card transition-all duration-300 hover:translate-y-[-4px]"
               style={{
                 borderColor: 'hsl(172 55% 35% / 0.35)',
               }}
             >
-              <div
-                className="absolute left-0 top-4 bottom-4 w-1 rounded-full opacity-60 group-hover:opacity-100 transition-opacity"
-                style={{ background: 'hsl(172 55% 35%)' }}
-              />
+              <div className="absolute left-0 top-0 bottom-0 w-1 bg-level-primary/40 group-hover:bg-level-primary transition-colors" />
 
               <div className="flex items-start gap-4">
                 <div
-                  className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+                  className="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0"
                   style={{
                     background: 'linear-gradient(135deg, hsl(172 55% 35% / 0.15), hsl(175 70% 50% / 0.15))',
                     border: '1px solid hsl(172 55% 35% / 0.25)',
@@ -86,10 +83,10 @@ const FeaturesSection = () => {
                   <feature.icon className="w-6 h-6 text-level-accent" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold text-level-foreground mb-2">
+                  <h3 className="text-xl font-bold text-level-foreground mb-2 group-hover:text-level-accent transition-colors">
                     {feature.title}
                   </h3>
-                  <p className="text-level-muted-foreground">
+                  <p className="text-level-muted-foreground leading-relaxed">
                     {feature.description}
                   </p>
                 </div>
