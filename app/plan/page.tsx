@@ -244,78 +244,78 @@ export default function PlanPage() {
       </header>
 
       {/* Hero */}
-      <section className="py-12 px-6">
+      <section className="py-8 md:py-12 px-4 md:px-6">
         <div className="max-w-5xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-gray-200 shadow-sm mb-6">
-            <span className="text-sm text-gray-600">Digital Career Guidance Platform</span>
-            <span className="text-xs px-2 py-0.5 rounded-full bg-teal-100 text-teal-700 font-medium">UK Schools</span>
+          <div className="inline-flex items-center gap-2 px-3 md:px-4 py-2 rounded-full bg-white border border-gray-200 shadow-sm mb-4 md:mb-6">
+            <span className="text-xs md:text-sm text-gray-600">Digital Career Guidance</span>
+            <span className="text-xs px-2 py-0.5 rounded-full bg-teal-100 text-teal-700 font-medium">UK</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+          <h1 className="text-3xl md:text-5xl font-bold text-gray-900 mb-3 md:mb-4">
             My Career Plan
           </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Gatsby Benchmarks &bull; ASDAN Integration &bull; Ofsted-Ready Reporting
+          <p className="text-base md:text-lg text-gray-600 max-w-2xl mx-auto px-4">
+            Gatsby Benchmarks &bull; ASDAN &bull; Ofsted-Ready
           </p>
         </div>
       </section>
 
       {/* Legend */}
-      <section className="px-6 pb-8">
+      <section className="px-4 md:px-6 pb-6 md:pb-8">
         <div className="max-w-5xl mx-auto">
-          <div className="flex flex-wrap items-center justify-center gap-6 p-4 rounded-xl bg-white border border-gray-200 shadow-sm">
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded bg-blue-100 border border-blue-200" />
-              <span className="text-sm text-gray-600">Gatsby Benchmark</span>
+          <div className="flex flex-wrap items-center justify-center gap-3 md:gap-6 p-3 md:p-4 rounded-xl bg-white border border-gray-200 shadow-sm">
+            <div className="flex items-center gap-1.5 md:gap-2">
+              <div className="w-3 h-3 md:w-4 md:h-4 rounded bg-blue-100 border border-blue-200" />
+              <span className="text-xs md:text-sm text-gray-600">Gatsby</span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded bg-orange-100 border border-orange-200" />
-              <span className="text-sm text-gray-600">Individual Focus</span>
+            <div className="flex items-center gap-1.5 md:gap-2">
+              <div className="w-3 h-3 md:w-4 md:h-4 rounded bg-orange-100 border border-orange-200" />
+              <span className="text-xs md:text-sm text-gray-600">Individual</span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded bg-emerald-100 border border-emerald-200" />
-              <span className="text-sm text-gray-600">ASDAN Qualification</span>
+            <div className="flex items-center gap-1.5 md:gap-2">
+              <div className="w-3 h-3 md:w-4 md:h-4 rounded bg-emerald-100 border border-emerald-200" />
+              <span className="text-xs md:text-sm text-gray-600">ASDAN</span>
             </div>
           </div>
         </div>
       </section>
 
       {/* Why Digital Section */}
-      <section className="px-6 pb-12">
+      <section className="px-4 md:px-6 pb-8 md:pb-12">
         <div className="max-w-5xl mx-auto">
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Why Go Digital?</h2>
+          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 md:p-8">
+            <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-5 md:mb-6">Why Go Digital?</h2>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="text-center p-4">
-                <div className="w-12 h-12 rounded-xl bg-teal-100 flex items-center justify-center mx-auto mb-3">
-                  <Camera className="w-6 h-6 text-teal-600" />
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+              <div className="text-center p-3 md:p-4">
+                <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-teal-100 flex items-center justify-center mx-auto mb-2 md:mb-3">
+                  <Camera className="w-5 h-5 md:w-6 md:h-6 text-teal-600" />
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-1">Photo Evidence</h3>
-                <p className="text-sm text-gray-500">Capture activities instantly with mobile camera</p>
+                <h3 className="font-semibold text-gray-900 mb-1 text-sm md:text-base">Photo Evidence</h3>
+                <p className="text-xs md:text-sm text-gray-500">Capture activities with mobile camera</p>
               </div>
 
-              <div className="text-center p-4">
-                <div className="w-12 h-12 rounded-xl bg-teal-100 flex items-center justify-center mx-auto mb-3">
-                  <Mic className="w-6 h-6 text-teal-600" />
+              <div className="text-center p-3 md:p-4">
+                <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-teal-100 flex items-center justify-center mx-auto mb-2 md:mb-3">
+                  <Mic className="w-5 h-5 md:w-6 md:h-6 text-teal-600" />
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-1">Voice Reflections</h3>
-                <p className="text-sm text-gray-500">Speak instead of write - perfect for SEN students</p>
+                <h3 className="font-semibold text-gray-900 mb-1 text-sm md:text-base">Voice Reflections</h3>
+                <p className="text-xs md:text-sm text-gray-500">Speak instead of write</p>
               </div>
 
-              <div className="text-center p-4">
-                <div className="w-12 h-12 rounded-xl bg-teal-100 flex items-center justify-center mx-auto mb-3">
-                  <BarChart3 className="w-6 h-6 text-teal-600" />
+              <div className="text-center p-3 md:p-4">
+                <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-teal-100 flex items-center justify-center mx-auto mb-2 md:mb-3">
+                  <BarChart3 className="w-5 h-5 md:w-6 md:h-6 text-teal-600" />
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-1">Real-Time Tracking</h3>
-                <p className="text-sm text-gray-500">Staff see progress instantly, no chasing paper</p>
+                <h3 className="font-semibold text-gray-900 mb-1 text-sm md:text-base">Real-Time Tracking</h3>
+                <p className="text-xs md:text-sm text-gray-500">See progress instantly</p>
               </div>
 
-              <div className="text-center p-4">
-                <div className="w-12 h-12 rounded-xl bg-teal-100 flex items-center justify-center mx-auto mb-3">
-                  <FileText className="w-6 h-6 text-teal-600" />
+              <div className="text-center p-3 md:p-4">
+                <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-teal-100 flex items-center justify-center mx-auto mb-2 md:mb-3">
+                  <FileText className="w-5 h-5 md:w-6 md:h-6 text-teal-600" />
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-1">Ofsted Reports</h3>
-                <p className="text-sm text-gray-500">One-click export for inspections</p>
+                <h3 className="font-semibold text-gray-900 mb-1 text-sm md:text-base">Ofsted Reports</h3>
+                <p className="text-xs md:text-sm text-gray-500">One-click export</p>
               </div>
             </div>
           </div>
@@ -323,11 +323,11 @@ export default function PlanPage() {
       </section>
 
       {/* Three Portals */}
-      <section className="px-6 pb-12">
+      <section className="px-4 md:px-6 pb-8 md:pb-12">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">Three Portals, One Platform</h2>
+          <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-5 md:mb-6 text-center">Three Portals, One Platform</h2>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-3 gap-4 md:gap-6">
             <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 text-center hover:shadow-lg transition-shadow">
               <div className="w-14 h-14 rounded-2xl bg-blue-100 flex items-center justify-center mx-auto mb-4">
                 <GraduationCap className="w-7 h-7 text-blue-600" />
@@ -371,27 +371,27 @@ export default function PlanPage() {
       </section>
 
       {/* Gatsby Benchmarks */}
-      <section className="px-6 pb-12">
+      <section className="px-4 md:px-6 pb-8 md:pb-12">
         <div className="max-w-5xl mx-auto">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">The 8 Gatsby Benchmarks</h2>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 md:mb-6">
+            <h2 className="text-xl md:text-2xl font-bold text-gray-900">The 8 Gatsby Benchmarks</h2>
             <div className="flex items-center gap-2">
               <button
                 onClick={expandAll}
-                className="text-sm px-3 py-1.5 rounded-lg bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors"
+                className="text-xs md:text-sm px-2.5 md:px-3 py-1.5 rounded-lg bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors"
               >
                 Expand All
               </button>
               <button
                 onClick={collapseAll}
-                className="text-sm px-3 py-1.5 rounded-lg bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors"
+                className="text-xs md:text-sm px-2.5 md:px-3 py-1.5 rounded-lg bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors"
               >
                 Collapse All
               </button>
             </div>
           </div>
-          <p className="text-gray-600 mb-6">
-            The UK&apos;s statutory framework for careers guidance, with ASDAN qualification mapping built in.
+          <p className="text-sm md:text-base text-gray-600 mb-5 md:mb-6">
+            The UK&apos;s statutory framework for careers guidance, with ASDAN mapping built in.
           </p>
 
           <div className="space-y-3">
@@ -408,21 +408,21 @@ export default function PlanPage() {
       </section>
 
       {/* ASDAN Integration */}
-      <section className="px-6 pb-12">
+      <section className="px-4 md:px-6 pb-8 md:pb-12">
         <div className="max-w-5xl mx-auto">
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-8">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-2.5 rounded-xl bg-emerald-100">
-                <FileCheck className="w-6 h-6 text-emerald-600" />
+          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 md:p-8">
+            <div className="flex items-center gap-3 mb-4 md:mb-6">
+              <div className="p-2 md:p-2.5 rounded-xl bg-emerald-100">
+                <FileCheck className="w-5 h-5 md:w-6 md:h-6 text-emerald-600" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-900">ASDAN Qualification Mapping</h2>
+              <h2 className="text-lg md:text-2xl font-bold text-gray-900">ASDAN Mapping</h2>
             </div>
 
-            <p className="text-gray-600 mb-6">
-              Every career activity maps directly to ASDAN units. Students build qualifications while completing their career plan.
+            <p className="text-sm md:text-base text-gray-600 mb-4 md:mb-6">
+              Every activity maps to ASDAN units. Students build qualifications while completing their career plan.
             </p>
 
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto -mx-5 md:mx-0 px-5 md:px-0">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-gray-200">
@@ -460,11 +460,11 @@ export default function PlanPage() {
       </section>
 
       {/* Security & Compliance */}
-      <section className="px-6 pb-12">
+      <section className="px-4 md:px-6 pb-8 md:pb-12">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Security, Safeguarding & Compliance</h2>
+          <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-5 md:mb-6">Security & Compliance</h2>
 
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid md:grid-cols-2 gap-3 md:gap-4">
             {/* Data Protection */}
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
               <div className="flex items-center gap-3 mb-4">
@@ -565,27 +565,27 @@ export default function PlanPage() {
       </section>
 
       {/* Download CTA */}
-      <section className="px-6 pb-12">
+      <section className="px-4 md:px-6 pb-8 md:pb-12">
         <div className="max-w-5xl mx-auto">
-          <div className="bg-gradient-to-br from-teal-600 to-teal-700 rounded-2xl p-8 text-center text-white">
-            <h2 className="text-2xl font-bold mb-4">Ready to Go Digital?</h2>
-            <p className="text-teal-100 mb-6 max-w-xl mx-auto">
-              Transform your paper-based career plans into a powerful digital platform with real-time tracking and Ofsted-ready reporting.
+          <div className="bg-gradient-to-br from-teal-600 to-teal-700 rounded-2xl p-6 md:p-8 text-center text-white">
+            <h2 className="text-xl md:text-2xl font-bold mb-3 md:mb-4">Ready to Go Digital?</h2>
+            <p className="text-teal-100 mb-5 md:mb-6 max-w-xl mx-auto text-sm md:text-base">
+              Transform paper-based career plans into a powerful digital platform with real-time tracking.
             </p>
-            <div className="flex flex-wrap items-center justify-center gap-4">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4">
               <Link
                 href="/#contact"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-white text-teal-700 font-semibold hover:bg-teal-50 transition-colors"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-white text-teal-700 font-semibold hover:bg-teal-50 transition-colors"
               >
                 Get in Touch
               </Link>
               <a
                 href="/Student Plan.pdf"
                 download
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-teal-500 text-white font-medium hover:bg-teal-400 transition-colors"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-teal-500 text-white font-medium hover:bg-teal-400 transition-colors"
               >
                 <Download className="w-4 h-4" />
-                Download Sample Booklet
+                Download Booklet
               </a>
             </div>
           </div>
@@ -593,14 +593,14 @@ export default function PlanPage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-gray-200 bg-white py-8 px-6">
-        <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      <footer className="border-t border-gray-200 bg-white py-6 md:py-8 px-4 md:px-6">
+        <div className="max-w-5xl mx-auto flex flex-col items-center gap-3 md:flex-row md:justify-between md:gap-4 text-center md:text-left">
           <div className="flex items-center gap-2">
             <span className="text-lg font-bold text-teal-700">Level</span>
             <span className="text-gray-400">by OpStack</span>
           </div>
-          <div className="text-sm text-gray-500">
-            Supporting UK National Curriculum, ASDAN integration, and AI-powered assessments
+          <div className="text-xs md:text-sm text-gray-500 order-last md:order-none">
+            UK Curriculum &bull; ASDAN &bull; AI-powered
           </div>
           <a href="mailto:hello@opstack.uk" className="text-sm text-gray-500 hover:text-teal-600 transition-colors">
             hello@opstack.uk
