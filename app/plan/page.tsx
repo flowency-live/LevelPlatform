@@ -18,7 +18,12 @@ import {
   FileCheck,
   Eye,
   Download,
-  ArrowLeft
+  ArrowLeft,
+  CheckCircle2,
+  Camera,
+  Mic,
+  BarChart3,
+  FileText
 } from 'lucide-react'
 
 // Gatsby Benchmark data
@@ -138,57 +143,53 @@ function BenchmarkCard({ benchmark, isExpanded, onToggle }: {
   const isIndividual = benchmark.color === 'individual'
 
   return (
-    <div className={`rounded-xl border overflow-hidden transition-all duration-300 ${
-      isIndividual
-        ? 'border-orange-500/30 bg-orange-950/20'
-        : 'border-blue-500/30 bg-blue-950/20'
-    }`}>
+    <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md">
       <button
         onClick={onToggle}
-        className="w-full p-6 flex items-center gap-4 text-left hover:bg-white/5 transition-colors"
+        className="w-full p-5 flex items-center gap-4 text-left hover:bg-gray-50 transition-colors"
       >
-        <div className={`p-3 rounded-lg ${
-          isIndividual ? 'bg-orange-500/20' : 'bg-blue-500/20'
+        <div className={`p-3 rounded-xl ${
+          isIndividual ? 'bg-orange-100' : 'bg-blue-100'
         }`}>
-          <Icon className={`w-6 h-6 ${
-            isIndividual ? 'text-orange-400' : 'text-blue-400'
+          <Icon className={`w-5 h-5 ${
+            isIndividual ? 'text-orange-600' : 'text-blue-600'
           }`} />
         </div>
-        <div className="flex-1">
-          <div className="flex items-center gap-3">
-            <span className={`text-sm font-bold px-2 py-0.5 rounded ${
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-3 flex-wrap">
+            <span className={`text-xs font-bold px-2 py-1 rounded-md ${
               isIndividual
-                ? 'bg-orange-500/30 text-orange-300'
-                : 'bg-blue-500/30 text-blue-300'
+                ? 'bg-orange-100 text-orange-700'
+                : 'bg-blue-100 text-blue-700'
             }`}>
               {benchmark.id}
             </span>
-            <h3 className="text-lg font-semibold text-white">
+            <h3 className="text-base font-semibold text-gray-900">
               {benchmark.title}
             </h3>
           </div>
-          <p className="text-sm text-gray-400 mt-1 line-clamp-2">
+          <p className="text-sm text-gray-500 mt-1 line-clamp-1">
             {benchmark.description}
           </p>
         </div>
         {isExpanded ? (
-          <ChevronDown className="w-5 h-5 text-gray-400" />
+          <ChevronDown className="w-5 h-5 text-gray-400 flex-shrink-0" />
         ) : (
-          <ChevronRight className="w-5 h-5 text-gray-400" />
+          <ChevronRight className="w-5 h-5 text-gray-400 flex-shrink-0" />
         )}
       </button>
 
       {isExpanded && (
-        <div className="px-6 pb-6">
-          <div className="border-t border-white/10 pt-4">
-            <h4 className="text-sm font-medium text-gray-300 mb-3">Student Activities</h4>
+        <div className="px-5 pb-5">
+          <div className="border-t border-gray-100 pt-4">
+            <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Student Activities</h4>
             <div className="space-y-2">
               {benchmark.activities.map((activity, idx) => (
-                <div key={idx} className="flex items-start gap-3 p-3 rounded-lg bg-black/20">
-                  <div className="w-5 h-5 rounded border-2 border-gray-500 flex-shrink-0 mt-0.5" />
+                <div key={idx} className="flex items-start gap-3 p-3 rounded-lg bg-gray-50">
+                  <div className="w-5 h-5 rounded border-2 border-gray-300 flex-shrink-0 mt-0.5" />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm text-white">{activity.task}</p>
-                    <span className="inline-block mt-1 text-xs px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                    <p className="text-sm text-gray-700">{activity.task}</p>
+                    <span className="inline-block mt-1.5 text-xs px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-700 font-medium">
                       {activity.asdan}
                     </span>
                   </div>
@@ -203,7 +204,7 @@ function BenchmarkCard({ benchmark, isExpanded, onToggle }: {
 }
 
 export default function PlanPage() {
-  const [expandedBenchmarks, setExpandedBenchmarks] = useState<Set<string>>(new Set())
+  const [expandedBenchmarks, setExpandedBenchmarks] = useState<Set<string>>(new Set(['GB1']))
 
   const toggleBenchmark = (id: string) => {
     setExpandedBenchmarks(prev => {
@@ -226,34 +227,34 @@ export default function PlanPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
+    <div className="min-h-screen bg-gradient-to-b from-stone-100 via-stone-50 to-white">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-slate-950/80 backdrop-blur-xl border-b border-white/10">
+      <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-sm border-b border-gray-200">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
+          <Link href="/" className="flex items-center gap-2 text-gray-500 hover:text-gray-900 transition-colors">
             <ArrowLeft className="w-4 h-4" />
-            <span className="text-sm">Back to Level</span>
+            <span className="text-sm font-medium">Back to Level</span>
           </Link>
-          <div className="flex items-center gap-2">
-            <span className="text-xl font-bold level-gradient-text">Level</span>
-            <span className="text-gray-500">|</span>
-            <span className="text-sm text-gray-400">My Career Plan</span>
+          <div className="flex items-center gap-3">
+            <span className="text-xl font-bold text-teal-700">Level</span>
+            <span className="text-gray-300">|</span>
+            <span className="text-sm text-gray-500">My Career Plan</span>
           </div>
         </div>
       </header>
 
       {/* Hero */}
-      <section className="py-16 px-6">
+      <section className="py-12 px-6">
         <div className="max-w-5xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-6">
-            <span className="text-sm text-gray-300">Product Requirements Document</span>
-            <span className="text-xs px-2 py-0.5 rounded bg-level-primary/20 text-level-accent">v2.0</span>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-gray-200 shadow-sm mb-6">
+            <span className="text-sm text-gray-600">Digital Career Guidance Platform</span>
+            <span className="text-xs px-2 py-0.5 rounded-full bg-teal-100 text-teal-700 font-medium">UK Schools</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
             My Career Plan
           </h1>
-          <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-            Digital Career Guidance Platform for UK Schools
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Gatsby Benchmarks &bull; ASDAN Integration &bull; Ofsted-Ready Reporting
           </p>
         </div>
       </section>
@@ -261,55 +262,108 @@ export default function PlanPage() {
       {/* Legend */}
       <section className="px-6 pb-8">
         <div className="max-w-5xl mx-auto">
-          <div className="flex flex-wrap items-center justify-center gap-6 p-4 rounded-xl bg-white/5 border border-white/10">
+          <div className="flex flex-wrap items-center justify-center gap-6 p-4 rounded-xl bg-white border border-gray-200 shadow-sm">
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded bg-blue-500/30 border border-blue-500/50" />
-              <span className="text-sm text-gray-300">Gatsby Benchmark</span>
+              <div className="w-4 h-4 rounded bg-blue-100 border border-blue-200" />
+              <span className="text-sm text-gray-600">Gatsby Benchmark</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded bg-orange-500/30 border border-orange-500/50" />
-              <span className="text-sm text-gray-300">Individual Focus</span>
+              <div className="w-4 h-4 rounded bg-orange-100 border border-orange-200" />
+              <span className="text-sm text-gray-600">Individual Focus</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded bg-emerald-500/30 border border-emerald-500/50" />
-              <span className="text-sm text-gray-300">ASDAN Qualification</span>
+              <div className="w-4 h-4 rounded bg-emerald-100 border border-emerald-200" />
+              <span className="text-sm text-gray-600">ASDAN Qualification</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Executive Summary */}
-      <section className="px-6 pb-16">
+      {/* Why Digital Section */}
+      <section className="px-6 pb-12">
         <div className="max-w-5xl mx-auto">
-          <div className="level-card p-8">
-            <h2 className="text-2xl font-bold text-white mb-4">Executive Summary</h2>
-            <div className="prose prose-invert max-w-none">
-              <p className="text-gray-300 leading-relaxed">
-                Level is a digital career guidance platform that transforms the statutory Gatsby Benchmark
-                framework into an accessible, evidence-based student journey. Designed specifically for UK
-                schools supporting students with additional needs, Level digitises the &ldquo;My Career Plan&rdquo;
-                booklet while adding real-time progress tracking, evidence capture, and Ofsted-ready reporting.
-              </p>
+          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Why Go Digital?</h2>
 
-              <div className="grid md:grid-cols-3 gap-6 mt-8">
-                <div className="p-4 rounded-lg bg-white/5">
-                  <h3 className="text-lg font-semibold text-white mb-2">For Students</h3>
-                  <p className="text-sm text-gray-400">
-                    Simple, accessible interface to track career activities with photo and voice evidence
-                  </p>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="text-center p-4">
+                <div className="w-12 h-12 rounded-xl bg-teal-100 flex items-center justify-center mx-auto mb-3">
+                  <Camera className="w-6 h-6 text-teal-600" />
                 </div>
-                <div className="p-4 rounded-lg bg-white/5">
-                  <h3 className="text-lg font-semibold text-white mb-2">For Staff</h3>
-                  <p className="text-sm text-gray-400">
-                    Real-time dashboards showing student progress without additional admin burden
-                  </p>
+                <h3 className="font-semibold text-gray-900 mb-1">Photo Evidence</h3>
+                <p className="text-sm text-gray-500">Capture activities instantly with mobile camera</p>
+              </div>
+
+              <div className="text-center p-4">
+                <div className="w-12 h-12 rounded-xl bg-teal-100 flex items-center justify-center mx-auto mb-3">
+                  <Mic className="w-6 h-6 text-teal-600" />
                 </div>
-                <div className="p-4 rounded-lg bg-white/5">
-                  <h3 className="text-lg font-semibold text-white mb-2">For Leadership</h3>
-                  <p className="text-sm text-gray-400">
-                    Instant Ofsted-ready reports demonstrating benchmark compliance
-                  </p>
+                <h3 className="font-semibold text-gray-900 mb-1">Voice Reflections</h3>
+                <p className="text-sm text-gray-500">Speak instead of write - perfect for SEN students</p>
+              </div>
+
+              <div className="text-center p-4">
+                <div className="w-12 h-12 rounded-xl bg-teal-100 flex items-center justify-center mx-auto mb-3">
+                  <BarChart3 className="w-6 h-6 text-teal-600" />
                 </div>
+                <h3 className="font-semibold text-gray-900 mb-1">Real-Time Tracking</h3>
+                <p className="text-sm text-gray-500">Staff see progress instantly, no chasing paper</p>
+              </div>
+
+              <div className="text-center p-4">
+                <div className="w-12 h-12 rounded-xl bg-teal-100 flex items-center justify-center mx-auto mb-3">
+                  <FileText className="w-6 h-6 text-teal-600" />
+                </div>
+                <h3 className="font-semibold text-gray-900 mb-1">Ofsted Reports</h3>
+                <p className="text-sm text-gray-500">One-click export for inspections</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Three Portals */}
+      <section className="px-6 pb-12">
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">Three Portals, One Platform</h2>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 text-center hover:shadow-lg transition-shadow">
+              <div className="w-14 h-14 rounded-2xl bg-blue-100 flex items-center justify-center mx-auto mb-4">
+                <GraduationCap className="w-7 h-7 text-blue-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Student Portal</h3>
+              <p className="text-sm text-gray-500 mb-4">
+                Complete activities, upload evidence, track progress across all 8 benchmarks
+              </p>
+              <div className="inline-block px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium">
+                Enter as Student
+              </div>
+            </div>
+
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 text-center hover:shadow-lg transition-shadow">
+              <div className="w-14 h-14 rounded-2xl bg-teal-100 flex items-center justify-center mx-auto mb-4">
+                <Users className="w-7 h-7 text-teal-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Teacher Dashboard</h3>
+              <p className="text-sm text-gray-500 mb-4">
+                Review students, validate completions, add notes, run termly reviews
+              </p>
+              <div className="inline-block px-4 py-2 rounded-lg bg-teal-600 text-white text-sm font-medium">
+                Enter as Teacher
+              </div>
+            </div>
+
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 text-center hover:shadow-lg transition-shadow">
+              <div className="w-14 h-14 rounded-2xl bg-slate-100 flex items-center justify-center mx-auto mb-4">
+                <BarChart3 className="w-7 h-7 text-slate-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">School Management</h3>
+              <p className="text-sm text-gray-500 mb-4">
+                School-wide analytics, Ofsted reports, cohort tracking, compliance dashboard
+              </p>
+              <div className="inline-block px-4 py-2 rounded-lg bg-slate-600 text-white text-sm font-medium">
+                Enter School Management
               </div>
             </div>
           </div>
@@ -317,31 +371,30 @@ export default function PlanPage() {
       </section>
 
       {/* Gatsby Benchmarks */}
-      <section className="px-6 pb-16">
+      <section className="px-6 pb-12">
         <div className="max-w-5xl mx-auto">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-white">The 8 Gatsby Benchmarks</h2>
+            <h2 className="text-2xl font-bold text-gray-900">The 8 Gatsby Benchmarks</h2>
             <div className="flex items-center gap-2">
               <button
                 onClick={expandAll}
-                className="text-sm px-3 py-1.5 rounded-lg bg-white/5 text-gray-300 hover:bg-white/10 transition-colors"
+                className="text-sm px-3 py-1.5 rounded-lg bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors"
               >
                 Expand All
               </button>
               <button
                 onClick={collapseAll}
-                className="text-sm px-3 py-1.5 rounded-lg bg-white/5 text-gray-300 hover:bg-white/10 transition-colors"
+                className="text-sm px-3 py-1.5 rounded-lg bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors"
               >
                 Collapse All
               </button>
             </div>
           </div>
-          <p className="text-gray-400 mb-8">
-            The Gatsby Benchmarks are the UK&apos;s statutory framework for careers guidance in schools,
-            established by the Gatsby Foundation and adopted by the Department for Education.
+          <p className="text-gray-600 mb-6">
+            The UK&apos;s statutory framework for careers guidance, with ASDAN qualification mapping built in.
           </p>
 
-          <div className="space-y-4">
+          <div className="space-y-3">
             {gatsbyBenchmarks.map(benchmark => (
               <BenchmarkCard
                 key={benchmark.id}
@@ -355,27 +408,26 @@ export default function PlanPage() {
       </section>
 
       {/* ASDAN Integration */}
-      <section className="px-6 pb-16">
+      <section className="px-6 pb-12">
         <div className="max-w-5xl mx-auto">
-          <div className="level-card p-8">
+          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-8">
             <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 rounded-lg bg-emerald-500/20">
-                <FileCheck className="w-6 h-6 text-emerald-400" />
+              <div className="p-2.5 rounded-xl bg-emerald-100">
+                <FileCheck className="w-6 h-6 text-emerald-600" />
               </div>
-              <h2 className="text-2xl font-bold text-white">ASDAN Qualification Integration</h2>
+              <h2 className="text-2xl font-bold text-gray-900">ASDAN Qualification Mapping</h2>
             </div>
 
-            <p className="text-gray-300 mb-6">
-              Level natively integrates with ASDAN (Award Scheme Development and Accreditation Network)
-              qualifications, allowing career activities to contribute directly toward recognised awards.
+            <p className="text-gray-600 mb-6">
+              Every career activity maps directly to ASDAN units. Students build qualifications while completing their career plan.
             </p>
 
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-white/10">
-                    <th className="text-left py-3 px-4 text-gray-400 font-medium">Career Activity</th>
-                    <th className="text-left py-3 px-4 text-gray-400 font-medium">ASDAN Qualification</th>
+                  <tr className="border-b border-gray-200">
+                    <th className="text-left py-3 px-4 text-gray-500 font-semibold">Career Activity</th>
+                    <th className="text-left py-3 px-4 text-gray-500 font-semibold">ASDAN Qualification</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -391,10 +443,10 @@ export default function PlanPage() {
                     ['Post-16 exploration', 'Preparing for College / Higher Education Awareness'],
                     ['Target tracking', 'Managing My Learning'],
                   ].map(([activity, asdan], idx) => (
-                    <tr key={idx} className="border-b border-white/5 hover:bg-white/5">
-                      <td className="py-3 px-4 text-gray-300">{activity}</td>
+                    <tr key={idx} className="border-b border-gray-100 hover:bg-gray-50">
+                      <td className="py-3 px-4 text-gray-700">{activity}</td>
                       <td className="py-3 px-4">
-                        <span className="inline-block px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs">
+                        <span className="inline-block px-2.5 py-1 rounded-md bg-emerald-100 text-emerald-700 text-xs font-medium">
                           {asdan}
                         </span>
                       </td>
@@ -408,190 +460,129 @@ export default function PlanPage() {
       </section>
 
       {/* Security & Compliance */}
-      <section className="px-6 pb-16">
+      <section className="px-6 pb-12">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-2xl font-bold text-white mb-8">Security, Safeguarding & Compliance</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Security, Safeguarding & Compliance</h2>
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-2 gap-4">
             {/* Data Protection */}
-            <div className="level-card p-6">
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
               <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 rounded-lg bg-blue-500/20">
-                  <Shield className="w-5 h-5 text-blue-400" />
+                <div className="p-2 rounded-lg bg-blue-100">
+                  <Shield className="w-5 h-5 text-blue-600" />
                 </div>
-                <h3 className="text-lg font-semibold text-white">Data Protection</h3>
+                <h3 className="font-semibold text-gray-900">Data Protection</h3>
               </div>
-              <ul className="space-y-2 text-sm text-gray-300">
+              <ul className="space-y-2 text-sm text-gray-600">
                 <li className="flex items-start gap-2">
-                  <span className="text-level-accent">•</span>
+                  <CheckCircle2 className="w-4 h-4 text-teal-500 mt-0.5 flex-shrink-0" />
                   GDPR (UK) compliant with documented DPIA
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-level-accent">•</span>
-                  All data stored in AWS UK regions (eu-west-2)
+                  <CheckCircle2 className="w-4 h-4 text-teal-500 mt-0.5 flex-shrink-0" />
+                  All data stored in AWS UK regions
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-level-accent">•</span>
+                  <CheckCircle2 className="w-4 h-4 text-teal-500 mt-0.5 flex-shrink-0" />
                   AES-256 encryption at rest, TLS 1.3 in transit
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-level-accent">•</span>
-                  Data portability and right to erasure workflows
                 </li>
               </ul>
             </div>
 
             {/* Safeguarding */}
-            <div className="level-card p-6">
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
               <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 rounded-lg bg-orange-500/20">
-                  <Eye className="w-5 h-5 text-orange-400" />
+                <div className="p-2 rounded-lg bg-orange-100">
+                  <Eye className="w-5 h-5 text-orange-600" />
                 </div>
-                <h3 className="text-lg font-semibold text-white">Safeguarding</h3>
+                <h3 className="font-semibold text-gray-900">Safeguarding</h3>
               </div>
-              <ul className="space-y-2 text-sm text-gray-300">
+              <ul className="space-y-2 text-sm text-gray-600">
                 <li className="flex items-start gap-2">
-                  <span className="text-level-accent">•</span>
-                  Role-based access control (student sees own data only)
+                  <CheckCircle2 className="w-4 h-4 text-teal-500 mt-0.5 flex-shrink-0" />
+                  Role-based access control throughout
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-level-accent">•</span>
+                  <CheckCircle2 className="w-4 h-4 text-teal-500 mt-0.5 flex-shrink-0" />
                   Full audit trail of all data access
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-level-accent">•</span>
-                  Content moderation for uploads
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-level-accent">•</span>
-                  Staff approval required for external sharing
+                  <CheckCircle2 className="w-4 h-4 text-teal-500 mt-0.5 flex-shrink-0" />
+                  Staff approval for external sharing
                 </li>
               </ul>
             </div>
 
             {/* Cyber Security */}
-            <div className="level-card p-6">
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
               <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 rounded-lg bg-purple-500/20">
-                  <Lock className="w-5 h-5 text-purple-400" />
+                <div className="p-2 rounded-lg bg-purple-100">
+                  <Lock className="w-5 h-5 text-purple-600" />
                 </div>
-                <h3 className="text-lg font-semibold text-white">Cyber Security</h3>
+                <h3 className="font-semibold text-gray-900">Cyber Security</h3>
               </div>
-              <ul className="space-y-2 text-sm text-gray-300">
+              <ul className="space-y-2 text-sm text-gray-600">
                 <li className="flex items-start gap-2">
-                  <span className="text-level-accent">•</span>
-                  AWS Well-Architected Framework compliance
+                  <CheckCircle2 className="w-4 h-4 text-teal-500 mt-0.5 flex-shrink-0" />
+                  AWS Well-Architected Framework
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-level-accent">•</span>
+                  <CheckCircle2 className="w-4 h-4 text-teal-500 mt-0.5 flex-shrink-0" />
                   Multi-factor authentication for staff
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-level-accent">•</span>
-                  Annual penetration testing
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-level-accent">•</span>
-                  Cyber Essentials Plus certification (target)
+                  <CheckCircle2 className="w-4 h-4 text-teal-500 mt-0.5 flex-shrink-0" />
+                  Cyber Essentials Plus certification
                 </li>
               </ul>
             </div>
 
             {/* Anonymisation */}
-            <div className="level-card p-6">
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
               <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 rounded-lg bg-emerald-500/20">
-                  <Users className="w-5 h-5 text-emerald-400" />
+                <div className="p-2 rounded-lg bg-emerald-100">
+                  <Users className="w-5 h-5 text-emerald-600" />
                 </div>
-                <h3 className="text-lg font-semibold text-white">Anonymisation</h3>
+                <h3 className="font-semibold text-gray-900">Anonymisation</h3>
               </div>
-              <ul className="space-y-2 text-sm text-gray-300">
+              <ul className="space-y-2 text-sm text-gray-600">
                 <li className="flex items-start gap-2">
-                  <span className="text-level-accent">•</span>
+                  <CheckCircle2 className="w-4 h-4 text-teal-500 mt-0.5 flex-shrink-0" />
                   Analytics use cohort-level data only
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-level-accent">•</span>
-                  Minimum cohort size of 10 for statistics
+                  <CheckCircle2 className="w-4 h-4 text-teal-500 mt-0.5 flex-shrink-0" />
+                  Minimum cohort size for statistics
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-level-accent">•</span>
-                  Small number suppression to prevent identification
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-level-accent">•</span>
-                  No third-party data sharing without consent
+                  <CheckCircle2 className="w-4 h-4 text-teal-500 mt-0.5 flex-shrink-0" />
+                  No third-party data sharing
                 </li>
               </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Compliance Table */}
-      <section className="px-6 pb-16">
-        <div className="max-w-5xl mx-auto">
-          <div className="level-card p-8">
-            <h2 className="text-2xl font-bold text-white mb-6">Compliance Summary</h2>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-white/10">
-                    <th className="text-left py-3 px-4 text-gray-400 font-medium">Requirement</th>
-                    <th className="text-left py-3 px-4 text-gray-400 font-medium">Status</th>
-                    <th className="text-left py-3 px-4 text-gray-400 font-medium">Evidence</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {[
-                    ['GDPR (UK)', 'Compliant', 'DPA, DPIA on file'],
-                    ['Gatsby Benchmarks', 'Native support', '1:1 benchmark mapping'],
-                    ['ASDAN', 'Integrated', 'Unit mapping table'],
-                    ['Ofsted requirements', 'Export ready', 'One-click reports'],
-                    ['Keeping Children Safe in Education', 'Aligned', 'Safeguarding controls'],
-                    ['Accessibility (WCAG 2.1 AA)', 'Target', 'Accessibility statement'],
-                    ['Cyber Essentials Plus', 'Target', 'Certification in progress'],
-                  ].map(([requirement, status, evidence], idx) => (
-                    <tr key={idx} className="border-b border-white/5 hover:bg-white/5">
-                      <td className="py-3 px-4 text-gray-300">{requirement}</td>
-                      <td className="py-3 px-4">
-                        <span className={`inline-block px-2 py-0.5 rounded text-xs ${
-                          status === 'Compliant' || status === 'Native support' || status === 'Integrated' || status === 'Export ready' || status === 'Aligned'
-                            ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-                            : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                        }`}>
-                          {status}
-                        </span>
-                      </td>
-                      <td className="py-3 px-4 text-gray-400">{evidence}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
             </div>
           </div>
         </div>
       </section>
 
       {/* Download CTA */}
-      <section className="px-6 pb-16">
+      <section className="px-6 pb-12">
         <div className="max-w-5xl mx-auto">
-          <div className="level-card p-8 text-center bg-gradient-to-br from-level-primary/20 to-level-accent/10">
-            <h2 className="text-2xl font-bold text-white mb-4">Ready to Learn More?</h2>
-            <p className="text-gray-300 mb-6 max-w-xl mx-auto">
-              Get in touch to discuss how Level can support your school&apos;s careers guidance programme.
+          <div className="bg-gradient-to-br from-teal-600 to-teal-700 rounded-2xl p-8 text-center text-white">
+            <h2 className="text-2xl font-bold mb-4">Ready to Go Digital?</h2>
+            <p className="text-teal-100 mb-6 max-w-xl mx-auto">
+              Transform your paper-based career plans into a powerful digital platform with real-time tracking and Ofsted-ready reporting.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-4">
               <Link
                 href="/#contact"
-                className="btn-primary inline-flex items-center gap-2"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-white text-teal-700 font-semibold hover:bg-teal-50 transition-colors"
               >
-                Contact Us
+                Get in Touch
               </Link>
               <a
                 href="/Student Plan.pdf"
                 download
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-white/10 text-white hover:bg-white/20 transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-teal-500 text-white font-medium hover:bg-teal-400 transition-colors"
               >
                 <Download className="w-4 h-4" />
                 Download Sample Booklet
@@ -602,16 +593,16 @@ export default function PlanPage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-white/10 py-8 px-6">
+      <footer className="border-t border-gray-200 bg-white py-8 px-6">
         <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <span className="text-lg font-bold level-gradient-text">Level</span>
-            <span className="text-gray-500">by OpStack</span>
+            <span className="text-lg font-bold text-teal-700">Level</span>
+            <span className="text-gray-400">by OpStack</span>
           </div>
           <div className="text-sm text-gray-500">
-            Document version 2.0 | March 2026
+            Supporting UK National Curriculum, ASDAN integration, and AI-powered assessments
           </div>
-          <a href="mailto:hello@opstack.uk" className="text-sm text-gray-400 hover:text-white transition-colors">
+          <a href="mailto:hello@opstack.uk" className="text-sm text-gray-500 hover:text-teal-600 transition-colors">
             hello@opstack.uk
           </a>
         </div>
