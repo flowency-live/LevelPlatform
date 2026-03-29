@@ -4,12 +4,8 @@ import { StudentId } from '@/lib/domain/student/StudentId';
 import { BenchmarkId } from '@/lib/domain/benchmark/BenchmarkId';
 import { ActivityId } from '@/lib/domain/benchmark/ActivityId';
 import { CompleteActivity } from '@/lib/application/CompleteActivity';
-import { InMemoryStudentRepository } from '@/lib/domain/student/InMemoryStudentRepository';
-import { InMemoryBenchmarkProgressRepository } from '@/lib/domain/benchmark/InMemoryBenchmarkProgressRepository';
+import { studentRepository, progressRepository } from '@/lib/infrastructure/seeded-repositories';
 
-// TODO: Replace with DI container / singleton pattern
-const studentRepository = new InMemoryStudentRepository();
-const progressRepository = new InMemoryBenchmarkProgressRepository();
 const completeActivity = new CompleteActivity(studentRepository, progressRepository);
 
 const CompleteActivitySchema = z.object({

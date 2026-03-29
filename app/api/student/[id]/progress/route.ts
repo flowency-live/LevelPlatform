@@ -1,12 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { StudentId } from '@/lib/domain/student/StudentId';
 import { GetStudentProgress } from '@/lib/application/GetStudentProgress';
-import { InMemoryStudentRepository } from '@/lib/domain/student/InMemoryStudentRepository';
-import { InMemoryBenchmarkProgressRepository } from '@/lib/domain/benchmark/InMemoryBenchmarkProgressRepository';
+import { studentRepository, progressRepository } from '@/lib/infrastructure/seeded-repositories';
 
-// TODO: Replace with DI container / singleton pattern
-const studentRepository = new InMemoryStudentRepository();
-const progressRepository = new InMemoryBenchmarkProgressRepository();
 const getStudentProgress = new GetStudentProgress(studentRepository, progressRepository);
 
 export async function GET(
