@@ -16,6 +16,8 @@ export interface StudentProps {
   locationId: LocationId;
   cohortId: CohortId;
   yearGroup: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export class InvalidStudentError extends Error {
@@ -79,6 +81,14 @@ export class Student {
 
   get yearGroup(): number {
     return this.props.yearGroup;
+  }
+
+  get createdAt(): Date {
+    return this.props.createdAt;
+  }
+
+  get updatedAt(): Date {
+    return this.props.updatedAt;
   }
 
   equals(other: Student): boolean {

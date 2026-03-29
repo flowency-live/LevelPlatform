@@ -301,17 +301,17 @@ Frontend and backend can be built in parallel by sharing TypeScript interfaces.
 
 | File | Purpose | Status |
 |------|---------|--------|
-| `lib/types/student.ts` | Student, BenchmarkProgress, Activity interfaces | TODO |
-| `lib/types/tenant.ts` | TenantId, LocationId, CohortId types | TODO |
+| `lib/types/student.ts` | Student, BenchmarkProgress, Activity interfaces | ✓ Done |
+| `lib/types/tenant.ts` | TenantId, LocationId, CohortId types | ✓ Done (in student.ts) |
 | `lib/types/api.ts` | API request/response shapes | TODO |
 | `lib/reference-data/benchmarks.ts` | GB1-GB8 definitions | ✓ Done |
-| `lib/mock-data/students.ts` | 50 demo students with varied progress | TODO |
+| `lib/mock-data/students.ts` | 50 demo students with varied progress | ✓ Done |
 
 ---
 
 ## Track A: Backend (This Thread)
 
-### A1. Domain Value Objects
+### A1. Domain Value Objects ✅ COMPLETE
 
 | Task | Test File | Status |
 |------|-----------|--------|
@@ -322,21 +322,24 @@ Frontend and backend can be built in parallel by sharing TypeScript interfaces.
 | LocationId | `lib/domain/tenant/LocationId.test.ts` | ✓ Done |
 | CohortId | `lib/domain/tenant/CohortId.test.ts` | ✓ Done |
 
-### A2. Domain Entities
+### A2. Domain Entities ✅ COMPLETE
 
 | Task | Test File | Status |
 |------|-----------|--------|
 | Student entity | `lib/domain/student/Student.test.ts` | ✓ Done |
 | BenchmarkProgress entity | `lib/domain/benchmark/BenchmarkProgress.test.ts` | ✓ Done |
-| Activity entity | `lib/domain/benchmark/Activity.test.ts` | TODO |
+| Activity entity | Reference data only - no entity needed | N/A |
 
-### A3. Repository Layer
+### A3. Repository Layer ✅ IN-MEMORY COMPLETE
 
 | Task | Test File | Status |
 |------|-----------|--------|
-| StudentRepository interface | `lib/domain/student/StudentRepository.ts` | TODO |
-| InMemoryStudentRepository | `lib/infrastructure/InMemoryStudentRepository.test.ts` | TODO |
-| DynamoDBStudentRepository | `lib/infrastructure/DynamoDBStudentRepository.test.ts` | TODO |
+| StudentRepository interface | `lib/domain/student/StudentRepository.ts` | ✓ Done |
+| InMemoryStudentRepository | `lib/domain/student/InMemoryStudentRepository.test.ts` | ✓ Done (9 tests) |
+| BenchmarkProgressRepository interface | `lib/domain/benchmark/BenchmarkProgressRepository.ts` | ✓ Done |
+| InMemoryBenchmarkProgressRepository | `lib/domain/benchmark/InMemoryBenchmarkProgressRepository.test.ts` | ✓ Done (7 tests) |
+| DynamoDBStudentRepository | `lib/infrastructure/DynamoDBStudentRepository.test.ts` | TODO (Phase 4) |
+| DynamoDBBenchmarkProgressRepository | `lib/infrastructure/DynamoDBBenchmarkProgressRepository.test.ts` | TODO (Phase 4) |
 
 ### A4. Application Services
 
@@ -358,15 +361,24 @@ Frontend and backend can be built in parallel by sharing TypeScript interfaces.
 
 ## Track B: Frontend (Separate Thread)
 
-### B1. Mock Data Service
+### B1. Mock Data Service ✅ COMPLETE
 
 | Task | File | Status |
 |------|------|--------|
-| Mock data store | `lib/mock-data/store.ts` | TODO |
-| Seed students (50) | `lib/mock-data/students.ts` | TODO |
-| useMockData hook | `lib/hooks/useMockData.ts` | TODO |
+| Shared TypeScript interfaces | `lib/types/student.ts` | ✓ Done |
+| Seed students (50) | `lib/mock-data/students.ts` | ✓ Done |
+| useMockData hook | `lib/hooks/useMockData.ts` | TODO (use in components) |
 
-### B2. Shared Components
+### B2. Core UI Components ✅ COMPLETE
+
+| Task | Test File | Status |
+|------|-----------|--------|
+| Button | `components/ui/Button.test.tsx` | ✓ Done (18 tests) |
+| Input | `components/ui/Input.test.tsx` | ✓ Done (19 tests) |
+| Card | `components/ui/Card.test.tsx` | ✓ Done (15 tests) |
+| Checkbox | `components/ui/Checkbox.test.tsx` | ✓ Done (11 tests) |
+
+### B2b. Domain Components
 
 | Task | Test File | Status |
 |------|-----------|--------|
@@ -374,6 +386,15 @@ Frontend and backend can be built in parallel by sharing TypeScript interfaces.
 | BenchmarkCard | `components/benchmark/BenchmarkCard.test.tsx` | TODO |
 | ActivityCheckbox | `components/benchmark/ActivityCheckbox.test.tsx` | TODO |
 | Navigation | `components/shared/Navigation.test.tsx` | TODO |
+
+### B2c. Auth Pages ✅ COMPLETE
+
+| Task | Test File | Status |
+|------|-----------|--------|
+| Auth redirect logic | `lib/auth/redirect.test.ts` | ✓ Done (6 tests) |
+| Auth layout | `app/(auth)/layout.test.tsx` | ✓ Done (4 tests) |
+| Login page | `app/(auth)/login/page.test.tsx` | ✓ Done (9 tests) |
+| MFA page (staff only) | `app/(auth)/login/mfa/page.test.tsx` | TODO |
 
 ### B3. Student Portal Pages
 
@@ -601,14 +622,23 @@ Students × Benchmarks grid with color-coded cells. Click to drill down.
 
 | Phase | Status | Started | Completed |
 |-------|--------|---------|-----------|
-| Phase 1: Infrastructure | In Progress | 26/03/2026 | - |
-| Phase 2: Domain Foundation | In Progress | 26/03/2026 | - |
-| Phase 3: Repository Layer | Not Started | - | - |
-| Phase 4: Application Services | Not Started | - | - |
+| Phase 1: Infrastructure | ✅ Complete | 26/03/2026 | 29/03/2026 |
+| Phase 2: Domain Foundation | ✅ Complete | 26/03/2026 | 29/03/2026 |
+| Phase 3: Repository Layer | ✅ Complete | 29/03/2026 | 29/03/2026 |
+| Phase 4: Application Services | 🟡 In Progress | 29/03/2026 | - |
 | Phase 5: API Layer | Not Started | - | - |
-| Phase 6: UI Components | Not Started | - | - |
-| Phase 7: Pages | Not Started | - | - |
-| Phase 8: Demo Data | Not Started | - | - |
+| Phase 6: UI Components | 🟡 In Progress | 29/03/2026 | - |
+| Phase 7: Pages | 🟡 In Progress | 29/03/2026 | - |
+| Phase 8: Demo Data | ✅ Complete | 29/03/2026 | 29/03/2026 |
+
+### Test Coverage Summary
+
+| Category | Tests |
+|----------|-------|
+| Infrastructure (CDK) | 27 |
+| Domain (value objects, entities, repos) | 118 |
+| UI Components (Button, Input, Card, Checkbox) | 63 |
+| **Total** | **208** |
 
 ### Completed Items
 
@@ -616,18 +646,49 @@ Students × Benchmarks grid with color-coded cells. Click to drill down.
 - [x] CDK project setup (`infrastructure/`)
 - [x] SharedStack with DynamoDB single-table (3 GSIs) and S3 evidence bucket
 - [x] CicdStack - per-stage deploy role with least-privilege IAM (imports existing OIDC provider)
-- [x] GitHub Actions workflow (`deploy-infrastructure.yml`)
+- [x] GitHub Actions workflow (`deploy-infrastructure.yml`) with Slack notifications
 - [x] CTO Audit & Remediation (29/03/2026) - see details below
 - [x] Infrastructure deployed to dev (29/03/2026)
 
 **Phase 2: Domain Foundation**
 - [x] BenchmarkId value object with tests (`lib/domain/benchmark/BenchmarkId.ts`)
 - [x] ActivityId value object with tests (`lib/domain/benchmark/ActivityId.ts`)
+- [x] StudentId value object with tests (`lib/domain/student/StudentId.ts`)
+- [x] TenantId value object with tests (`lib/domain/tenant/TenantId.ts`)
+- [x] LocationId value object with tests (`lib/domain/tenant/LocationId.ts`)
+- [x] CohortId value object with tests (`lib/domain/tenant/CohortId.ts`)
+- [x] Student entity with timestamps (`createdAt`, `updatedAt`)
+- [x] BenchmarkProgress entity with timestamps (`createdAt`, `updatedAt`, `completedAt` per activity)
 - [x] Gatsby Benchmarks reference data with tests (`lib/reference-data/benchmarks.ts`)
-- [ ] StudentId value object
-- [ ] TenantId, LocationId, CohortId value objects
-- [ ] Student entity
-- [ ] BenchmarkProgress entity
+
+**Phase 3: Repository Layer**
+- [x] StudentRepository interface (`lib/domain/student/StudentRepository.ts`)
+- [x] InMemoryStudentRepository with tests (10 tests, includes timestamp preservation)
+- [x] BenchmarkProgressRepository interface (`lib/domain/benchmark/BenchmarkProgressRepository.ts`)
+- [x] InMemoryBenchmarkProgressRepository with tests (8 tests, includes timestamp preservation)
+
+**Phase 4: Application Services**
+- [x] GetStudentProgress use case (5 tests) - `lib/application/GetStudentProgress.ts`
+- [x] GetBenchmarkHeatmap use case (7 tests) - `lib/application/GetBenchmarkHeatmap.ts`
+- [ ] CompleteActivity use case - TODO
+
+**Phase 8: Demo Data (Frontend Support)**
+- [x] Shared TypeScript interfaces (`lib/types/student.ts`)
+- [x] Mock data with 50 demo students (`lib/mock-data/students.ts`)
+
+**Phase 6: UI Components (Elevate Design System)**
+- [x] Design tokens - Elevate four-layer color system (`app/globals.css`)
+- [x] Tailwind config with tenant/framework/persona colors (`tailwind.config.ts`)
+- [x] Source Sans 3 font integration (`app/layout.tsx`)
+- [x] Button component with CVA variants (18 tests) - `components/ui/Button.tsx`
+- [x] Input component with password toggle (19 tests) - `components/ui/Input.tsx`
+- [x] Card component with interactive variant (15 tests) - `components/ui/Card.tsx`
+- [x] Checkbox component with 44px touch target (11 tests) - `components/ui/Checkbox.tsx`
+
+**Phase 7: Pages (Login)**
+- [x] Auth redirect logic with role-based routing (6 tests) - `lib/auth/redirect.ts`
+- [x] Auth layout centered container (4 tests) - `app/(auth)/layout.tsx`
+- [x] Login page with form validation (9 tests) - `app/(auth)/login/page.tsx`
 
 ---
 
@@ -669,9 +730,10 @@ Elevate-CICD-{stage}    → Deploy role (imports existing OIDC provider)
 
 ### Test Coverage
 
-- Infrastructure: 24 tests passing (2 stacks)
-- Domain: 44 tests passing
-- Total: 68 tests
+- Infrastructure: 27 tests passing (2 stacks)
+- Domain: 118 tests passing (value objects, entities with timestamps, repositories)
+- UI Components: 63 tests passing (Button, Input, Card, Checkbox, Auth)
+- Total: 208 tests
 
 ### Deployed Resources (dev)
 

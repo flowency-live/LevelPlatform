@@ -5,6 +5,8 @@ import { LocationId } from '../tenant/LocationId';
 import { CohortId } from '../tenant/CohortId';
 
 describe('Student', () => {
+  const now = new Date('2026-03-29T10:00:00Z');
+
   const validProps = {
     id: StudentId.create('STUDENT-001'),
     firstName: 'Oliver',
@@ -14,6 +16,8 @@ describe('Student', () => {
     locationId: LocationId.create('LOC-EAST'),
     cohortId: CohortId.create('COHORT-Y10-2025'),
     yearGroup: 10,
+    createdAt: now,
+    updatedAt: now,
   };
 
   describe('create', () => {
