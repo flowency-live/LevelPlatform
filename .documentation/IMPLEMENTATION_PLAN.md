@@ -326,8 +326,8 @@ Frontend and backend can be built in parallel by sharing TypeScript interfaces.
 
 | Task | Test File | Status |
 |------|-----------|--------|
-| Student entity | `lib/domain/student/Student.test.ts` | TODO |
-| BenchmarkProgress entity | `lib/domain/benchmark/BenchmarkProgress.test.ts` | TODO |
+| Student entity | `lib/domain/student/Student.test.ts` | ✓ Done |
+| BenchmarkProgress entity | `lib/domain/benchmark/BenchmarkProgress.test.ts` | ✓ Done |
 | Activity entity | `lib/domain/benchmark/Activity.test.ts` | TODO |
 
 ### A3. Repository Layer
