@@ -341,21 +341,29 @@ Frontend and backend can be built in parallel by sharing TypeScript interfaces.
 | DynamoDBStudentRepository | `lib/infrastructure/DynamoDBStudentRepository.test.ts` | TODO (Phase 4) |
 | DynamoDBBenchmarkProgressRepository | `lib/infrastructure/DynamoDBBenchmarkProgressRepository.test.ts` | TODO (Phase 4) |
 
-### A4. Application Services
+### A4. Application Services ✅ COMPLETE
 
 | Task | Test File | Status |
 |------|-----------|--------|
-| GetStudentProgress | `lib/application/GetStudentProgress.test.ts` | TODO |
-| CompleteActivity | `lib/application/CompleteActivity.test.ts` | TODO |
-| GetBenchmarkHeatmap | `lib/application/GetBenchmarkHeatmap.test.ts` | TODO |
+| GetStudentProgress | `lib/application/GetStudentProgress.test.ts` | ✓ Done (5 tests) |
+| CompleteActivity | `lib/application/CompleteActivity.test.ts` | ✓ Done (8 tests) |
+| GetBenchmarkHeatmap | `lib/application/GetBenchmarkHeatmap.test.ts` | ✓ Done (6 tests) |
 
-### A5. API Endpoints
+### A5. API Endpoints ✅ COMPLETE (Next.js Routes)
 
-| Task | Test File | Status |
-|------|-----------|--------|
-| GET /api/student/progress | `app/api/student/progress/route.test.ts` | TODO |
-| POST /api/student/activity | `app/api/student/activity/route.test.ts` | TODO |
-| GET /api/teacher/heatmap | `app/api/teacher/heatmap/route.test.ts` | TODO |
+| Task | Route | Status |
+|------|-------|--------|
+| GET /api/student/[id]/progress | `app/api/student/[id]/progress/route.ts` | ✓ Done |
+| POST /api/student/[id]/activity | `app/api/student/[id]/activity/route.ts` | ✓ Done |
+| GET /api/teacher/heatmap | `app/api/teacher/heatmap/route.ts` | ✓ Done |
+
+### A6. AWS Lambda Handlers (Phase 4 - NOT STARTED)
+
+| Task | File | Status |
+|------|------|--------|
+| DynamoDBStudentRepository | `lib/infrastructure/DynamoDBStudentRepository.ts` | TODO |
+| DynamoDBBenchmarkProgressRepository | `lib/infrastructure/DynamoDBBenchmarkProgressRepository.ts` | TODO |
+| Lambda handlers | `infrastructure/lib/lambdas/` | TODO |
 
 ---
 
@@ -624,9 +632,10 @@ Students × Benchmarks grid with color-coded cells. Click to drill down.
 |-------|--------|---------|-----------|
 | Phase 1: Infrastructure | ✅ Complete | 26/03/2026 | 29/03/2026 |
 | Phase 2: Domain Foundation | ✅ Complete | 26/03/2026 | 29/03/2026 |
-| Phase 3: Repository Layer | ✅ Complete | 29/03/2026 | 29/03/2026 |
-| Phase 4: Application Services | 🟡 In Progress | 29/03/2026 | - |
-| Phase 5: API Layer | Not Started | - | - |
+| Phase 3: Repository Layer (In-Memory) | ✅ Complete | 29/03/2026 | 29/03/2026 |
+| Phase 4: Application Services | ✅ Complete | 29/03/2026 | 29/03/2026 |
+| Phase 5: API Layer (Next.js Routes) | ✅ Complete | 29/03/2026 | 29/03/2026 |
+| Phase 5b: AWS Lambda Handlers | Not Started | - | - |
 | Phase 6: UI Components | 🟡 In Progress | 29/03/2026 | - |
 | Phase 7: Pages | 🟡 In Progress | 29/03/2026 | - |
 | Phase 8: Demo Data | ✅ Complete | 29/03/2026 | 29/03/2026 |
@@ -636,9 +645,11 @@ Students × Benchmarks grid with color-coded cells. Click to drill down.
 | Category | Tests |
 |----------|-------|
 | Infrastructure (CDK) | 27 |
-| Domain (value objects, entities, repos) | 118 |
-| UI Components (Button, Input, Card, Checkbox) | 63 |
-| **Total** | **208** |
+| Domain (value objects, entities, repos) | 81 |
+| Application Services | 19 |
+| Backend Total (lib/) | 138 |
+| UI Components | 63 |
+| **Total** | **228** |
 
 ### Completed Items
 
@@ -667,10 +678,15 @@ Students × Benchmarks grid with color-coded cells. Click to drill down.
 - [x] BenchmarkProgressRepository interface (`lib/domain/benchmark/BenchmarkProgressRepository.ts`)
 - [x] InMemoryBenchmarkProgressRepository with tests (8 tests, includes timestamp preservation)
 
-**Phase 4: Application Services**
+**Phase 4: Application Services** ✅ COMPLETE
 - [x] GetStudentProgress use case (5 tests) - `lib/application/GetStudentProgress.ts`
-- [x] GetBenchmarkHeatmap use case (7 tests) - `lib/application/GetBenchmarkHeatmap.ts`
-- [ ] CompleteActivity use case - TODO
+- [x] GetBenchmarkHeatmap use case (6 tests) - `lib/application/GetBenchmarkHeatmap.ts`
+- [x] CompleteActivity use case (8 tests) - `lib/application/CompleteActivity.ts`
+
+**Phase 5: API Layer (Next.js Routes)** ✅ COMPLETE
+- [x] GET `/api/student/[id]/progress` - Get student with benchmark progress
+- [x] POST `/api/student/[id]/activity` - Mark activity as complete (Zod validation)
+- [x] GET `/api/teacher/heatmap` - Get heatmap data by cohortId
 
 **Phase 8: Demo Data (Frontend Support)**
 - [x] Shared TypeScript interfaces (`lib/types/student.ts`)
@@ -731,9 +747,9 @@ Elevate-CICD-{stage}    → Deploy role (imports existing OIDC provider)
 ### Test Coverage
 
 - Infrastructure: 27 tests passing (2 stacks)
-- Domain: 118 tests passing (value objects, entities with timestamps, repositories)
+- Domain + Application: 138 tests passing (value objects, entities, repositories, use cases)
 - UI Components: 63 tests passing (Button, Input, Card, Checkbox, Auth)
-- Total: 208 tests
+- Total: 228 tests
 
 ### Deployed Resources (dev)
 
