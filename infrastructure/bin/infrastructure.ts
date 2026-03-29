@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import * as cdk from 'aws-cdk-lib/core';
+import * as cdk from 'aws-cdk-lib';
 import { SharedStack } from '../lib/shared-stack';
 import { CicdStack } from '../lib/cicd-stack';
 
