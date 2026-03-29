@@ -1,12 +1,13 @@
 /**
  * Mock data for frontend development.
- * 50 students with varied progress across 8 Gatsby Benchmarks.
+ * 20 students with varied progress across 8 Gatsby Benchmarks.
+ * None are 100% complete - all are works in progress.
  *
  * Distribution:
- * - 10 students: 80%+ complete (green)
- * - 20 students: 40-79% complete (yellow/orange)
- * - 15 students: 10-39% complete (orange/red)
- * - 5 students: <10% complete (red)
+ * - 5 students: 70-90% complete (green, almost there)
+ * - 8 students: 40-69% complete (yellow/orange)
+ * - 5 students: 15-39% complete (orange/red)
+ * - 2 students: <15% complete (red, just started)
  */
 
 import {
@@ -16,6 +17,7 @@ import {
   LocationId,
   CohortId,
   BenchmarkId,
+  ActivityId,
   BenchmarkProgress,
   StudentProgress,
   StudentSummary,
@@ -23,7 +25,9 @@ import {
   CompletionStatus,
   ActivityCompletion,
 } from '../types/student';
-import { BENCHMARKS } from '../reference-data/benchmarks';
+import { getAllBenchmarks } from '../reference-data/benchmarks';
+
+const BENCHMARKS = getAllBenchmarks();
 
 // ============================================================================
 // Constants
@@ -73,10 +77,14 @@ function generateActivityCompletions(
   if (!benchmark) return [];
 
   const totalActivities = benchmark.activities.length;
-  const completedCount = Math.round((percentComplete / 100) * totalActivities);
+  // Use floor and cap at totalActivities - 1 to ensure none are 100% complete
+  const completedCount = Math.min(
+    Math.floor((percentComplete / 100) * totalActivities),
+    totalActivities - 1
+  );
 
   return benchmark.activities.slice(0, completedCount).map((activity, index) => ({
-    activityId: activity.id,
+    activityId: activity.id as ActivityId,
     completedAt: new Date(Date.now() - (completedCount - index) * 24 * 60 * 60 * 1000).toISOString(),
   }));
 }
@@ -96,72 +104,37 @@ function generateBenchmarkProgress(
 }
 
 // ============================================================================
-// Progress Profiles (determines student distribution)
+// Progress Profiles (20 students, none 100% complete)
 // ============================================================================
 
-// 10 high performers (80%+)
-const HIGH_PROFILES: number[][] = [
-  [100, 100, 100, 100, 100, 100, 100, 100], // All complete
-  [100, 100, 100, 100, 100, 100, 100, 80],
-  [100, 100, 100, 100, 100, 100, 80, 80],
-  [100, 100, 100, 100, 100, 80, 80, 80],
-  [100, 100, 100, 100, 80, 80, 80, 80],
-  [100, 100, 100, 80, 80, 80, 80, 80],
-  [100, 100, 80, 80, 80, 80, 80, 80],
-  [100, 80, 80, 80, 80, 80, 80, 80],
-  [90, 90, 90, 90, 80, 80, 80, 80],
-  [85, 85, 85, 85, 85, 85, 85, 85],
-];
+// All profiles combined - 20 students total
+const PROGRESS_PROFILES: number[][] = [
+  // 5 high performers (70-90%, almost there but not complete)
+  [90, 85, 80, 75, 70, 65, 60, 55],
+  [85, 85, 80, 80, 75, 70, 65, 60],
+  [80, 80, 75, 75, 70, 70, 65, 65],
+  [90, 80, 75, 70, 65, 60, 55, 50],
+  [75, 75, 75, 75, 75, 70, 70, 70],
 
-// 20 medium performers (40-79%)
-const MEDIUM_PROFILES: number[][] = [
-  [75, 75, 75, 75, 50, 50, 50, 50],
-  [70, 70, 60, 60, 50, 50, 40, 40],
-  [80, 60, 60, 60, 40, 40, 40, 40],
-  [60, 60, 60, 60, 60, 60, 60, 60],
-  [75, 75, 50, 50, 50, 50, 50, 50],
-  [70, 70, 70, 50, 50, 50, 40, 40],
-  [65, 65, 65, 65, 45, 45, 45, 45],
-  [80, 70, 60, 50, 40, 40, 40, 40],
-  [55, 55, 55, 55, 55, 55, 55, 55],
-  [75, 65, 55, 55, 45, 45, 45, 45],
-  [70, 60, 60, 50, 50, 50, 40, 40],
-  [65, 65, 55, 55, 55, 45, 45, 45],
-  [80, 60, 60, 40, 40, 40, 40, 40],
-  [50, 50, 50, 50, 50, 50, 50, 50],
-  [75, 55, 55, 55, 45, 45, 45, 45],
-  [60, 60, 60, 50, 50, 40, 40, 40],
-  [70, 70, 50, 50, 50, 40, 40, 40],
-  [65, 60, 55, 50, 50, 45, 45, 40],
-  [75, 60, 55, 50, 45, 45, 40, 40],
-  [70, 65, 55, 50, 50, 45, 40, 40],
-];
+  // 8 medium performers (40-69%)
+  [65, 60, 55, 50, 45, 40, 35, 30],
+  [60, 60, 55, 55, 50, 50, 45, 45],
+  [55, 55, 50, 50, 45, 45, 40, 40],
+  [70, 60, 50, 45, 40, 35, 30, 25],
+  [50, 50, 50, 50, 45, 45, 40, 40],
+  [65, 55, 50, 45, 40, 40, 35, 35],
+  [60, 55, 50, 45, 45, 40, 40, 35],
+  [55, 50, 50, 45, 45, 40, 40, 35],
 
-// 15 low performers (10-39%)
-const LOW_PROFILES: number[][] = [
-  [35, 30, 25, 20, 15, 10, 10, 10],
-  [30, 30, 30, 20, 20, 10, 10, 10],
-  [40, 30, 20, 20, 15, 15, 10, 10],
-  [25, 25, 25, 25, 20, 15, 10, 10],
-  [35, 25, 25, 20, 15, 15, 10, 10],
-  [30, 30, 20, 20, 20, 10, 10, 10],
-  [20, 20, 20, 20, 20, 15, 15, 15],
-  [35, 30, 25, 15, 15, 10, 10, 10],
+  // 5 low performers (15-39%)
+  [35, 30, 25, 20, 15, 15, 10, 10],
+  [30, 30, 25, 20, 20, 15, 15, 10],
+  [40, 30, 25, 20, 15, 10, 10, 10],
   [25, 25, 20, 20, 15, 15, 15, 10],
-  [30, 25, 25, 20, 20, 15, 10, 10],
-  [40, 25, 20, 15, 15, 10, 10, 10],
-  [20, 20, 20, 15, 15, 15, 15, 10],
-  [35, 30, 20, 20, 15, 10, 10, 10],
-  [25, 20, 20, 20, 15, 15, 10, 10],
-  [30, 30, 25, 20, 15, 15, 10, 10],
-];
+  [35, 25, 20, 20, 15, 15, 10, 10],
 
-// 5 not started (0-9%)
-const NOT_STARTED_PROFILES: number[][] = [
-  [5, 5, 0, 0, 0, 0, 0, 0],
-  [10, 5, 0, 0, 0, 0, 0, 0],
-  [5, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0],
+  // 2 just started (<15%)
+  [15, 10, 5, 5, 0, 0, 0, 0],
   [10, 10, 5, 0, 0, 0, 0, 0],
 ];
 
@@ -171,8 +144,8 @@ const NOT_STARTED_PROFILES: number[][] = [
 
 function createStudent(index: number): Student {
   const location = index % 2 === 0 ? LOCATION_EAST : LOCATION_WEST;
-  const cohort = index < 25 ? COHORT_Y10 : COHORT_Y11;
-  const yearGroup = index < 25 ? 10 : 11;
+  const cohort = index < 10 ? COHORT_Y10 : COHORT_Y11;
+  const yearGroup = index < 10 ? 10 : 11;
 
   return {
     id: createStudentId(index),
@@ -189,17 +162,14 @@ function createStudent(index: number): Student {
 }
 
 function getProgressProfile(index: number): number[] {
-  if (index < 10) return HIGH_PROFILES[index];
-  if (index < 30) return MEDIUM_PROFILES[index - 10];
-  if (index < 45) return LOW_PROFILES[index - 30];
-  return NOT_STARTED_PROFILES[index - 45];
+  return PROGRESS_PROFILES[index] || PROGRESS_PROFILES[PROGRESS_PROFILES.length - 1];
 }
 
 // ============================================================================
 // Exported Mock Data
 // ============================================================================
 
-export const MOCK_STUDENTS: Student[] = Array.from({ length: 50 }, (_, i) => createStudent(i));
+export const MOCK_STUDENTS: Student[] = Array.from({ length: 20 }, (_, i) => createStudent(i));
 
 export const MOCK_BENCHMARK_PROGRESS: Map<StudentId, BenchmarkProgress[]> = new Map(
   MOCK_STUDENTS.map(student => {
@@ -280,11 +250,11 @@ export const MOCK_TENANT = {
 };
 
 export const MOCK_LOCATIONS = [
-  { id: LOCATION_EAST, name: 'Arnfield School East', studentCount: 25 },
-  { id: LOCATION_WEST, name: 'Arnfield School West', studentCount: 25 },
+  { id: LOCATION_EAST, name: 'Arnfield School East', studentCount: 10 },
+  { id: LOCATION_WEST, name: 'Arnfield School West', studentCount: 10 },
 ];
 
 export const MOCK_COHORTS = [
-  { id: COHORT_Y10, name: 'Year 10 2025-26', yearGroup: 10, studentCount: 25 },
-  { id: COHORT_Y11, name: 'Year 11 2025-26', yearGroup: 11, studentCount: 25 },
+  { id: COHORT_Y10, name: 'Year 10 2025-26', yearGroup: 10, studentCount: 10 },
+  { id: COHORT_Y11, name: 'Year 11 2025-26', yearGroup: 11, studentCount: 10 },
 ];

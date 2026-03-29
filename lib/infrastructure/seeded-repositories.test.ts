@@ -5,11 +5,11 @@ import { BenchmarkId } from '../domain/benchmark/BenchmarkId';
 
 describe('seeded-repositories', () => {
   describe('studentRepository', () => {
-    it('contains 50 students', async () => {
+    it('contains 20 students', async () => {
       const students = await studentRepository.findByCohortId(CohortId.create('COHORT-Y10-2025'));
       const students2 = await studentRepository.findByCohortId(CohortId.create('COHORT-Y11-2025'));
 
-      expect(students.length + students2.length).toBe(50);
+      expect(students.length + students2.length).toBe(20);
     });
 
     it('can find student by ID', async () => {
@@ -29,7 +29,7 @@ describe('seeded-repositories', () => {
     it('filters by cohort correctly', async () => {
       const y10Students = await studentRepository.findByCohortId(CohortId.create('COHORT-Y10-2025'));
 
-      expect(y10Students.length).toBe(25);
+      expect(y10Students.length).toBe(10);
       y10Students.forEach(s => {
         expect(s.yearGroup).toBe(10);
       });
@@ -50,12 +50,14 @@ describe('seeded-repositories', () => {
       expect(benchmarkIds).toContain('GB1');
     });
 
-    it('high performers have high completion', async () => {
-      // STUDENT-000 is first high performer (100% on all)
+    it('high performers have high but not 100% completion', async () => {
+      // STUDENT-000 is first high performer (70-90% range, not 100%)
       const progress = await progressRepository.findByStudentId(StudentId.create('STUDENT-000'));
 
-      const allComplete = progress.every(p => p.percentComplete === 100);
-      expect(allComplete).toBe(true);
+      const allHigh = progress.every(p => p.percentComplete >= 50);
+      const noneComplete = progress.every(p => p.percentComplete < 100);
+      expect(allHigh).toBe(true);
+      expect(noneComplete).toBe(true);
     });
 
     it('can find progress by student and benchmark', async () => {
