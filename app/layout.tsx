@@ -1,13 +1,17 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Source_Sans_3 } from 'next/font/google'
 import './globals.css'
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
+const sourceSans = Source_Sans_3({
+  subsets: ['latin'],
+  variable: '--font-source-sans',
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
-  title: 'Level | Special Education School Management',
-  description: 'AI-powered school management for special education. UK National Curriculum integration, intelligent assessments, and student progress tracking. Built by OpStack.',
-  keywords: ['special education', 'school management', 'SEND', 'UK curriculum', 'AI assessments', 'student progress', 'EdTech'],
+  title: 'Elevate | Career Guidance for SEND Education',
+  description: 'AI-powered career guidance platform for special education. Gatsby Benchmarks, ASDAN qualifications, and student progress tracking. Built by OpStack.',
+  keywords: ['special education', 'career guidance', 'SEND', 'Gatsby Benchmarks', 'ASDAN', 'student progress', 'EdTech'],
 }
 
 export default function RootLayout({
@@ -16,7 +20,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="en" className={sourceSans.variable}>
       <body className="font-sans antialiased">
         {children}
       </body>

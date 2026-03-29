@@ -3,17 +3,121 @@
 @tailwind utilities;
 
 :root {
-  --level-primary: 172 55% 35%;
-  --level-primary-dark: 172 55% 25%;
-  --level-primary-light: 172 55% 45%;
-  --level-accent: 175 70% 50%;
-  --level-accent-light: 175 70% 65%;
-  --level-background: 180 25% 10%;
-  --level-background-light: 180 20% 15%;
-  --level-card: 180 20% 15%;
-  --level-foreground: 0 0% 98%;
-  --level-muted-foreground: 180 10% 60%;
-  --level-muted: 180 15% 20%;
+  /* ============================================
+     ELEVATE DESIGN SYSTEM - Four Layer Colors
+     ============================================ */
+
+  /* Layer 1: Tenant (Arnfield Care defaults - customizable per school) */
+  --tenant-primary: #2F5D50;
+  --tenant-primary-dark: #1E3D35;
+  --tenant-secondary: #6B9B8A;
+  --tenant-accent: #A8D5C9;
+
+  /* Layer 2: Framework (fixed - never change) */
+  /* Gatsby Benchmarks - Blue */
+  --gatsby-primary: #3B82F6;
+  --gatsby-dark: #2563EB;
+  --gatsby-light: #93C5FD;
+  --gatsby-bg: #EFF6FF;
+  --gatsby-border: #BFDBFE;
+
+  /* ASDAN - Green */
+  --asdan-primary: #22C55E;
+  --asdan-dark: #16A34A;
+  --asdan-light: #86EFAC;
+  --asdan-bg: #F0FDF4;
+  --asdan-border: #BBF7D0;
+
+  /* Individual/Self-Development - Orange */
+  --individual-primary: #F97316;
+  --individual-dark: #EA580C;
+  --individual-light: #FDBA74;
+  --individual-bg: #FFF7ED;
+  --individual-border: #FED7AA;
+
+  /* Layer 3: Persona (role differentiation) */
+  --persona-student: #3B82F6;
+  --persona-student-bg: #EFF6FF;
+  --persona-teacher: #14B8A6;
+  --persona-teacher-bg: #F0FDFA;
+  --persona-management: #64748B;
+  --persona-management-bg: #F8FAFC;
+
+  /* Layer 4: System (consistent across all contexts) */
+  /* Text */
+  --text-primary: #1F2937;
+  --text-secondary: #4B5563;
+  --text-muted: #9CA3AF;
+  --text-inverse: #FFFFFF;
+
+  /* Surfaces */
+  --surface-page: #F9FAFB;
+  --surface-card: #FFFFFF;
+  --surface-elevated: #FFFFFF;
+  --surface-overlay: rgba(0, 0, 0, 0.5);
+
+  /* Borders */
+  --border-default: #E5E7EB;
+  --border-strong: #D1D5DB;
+
+  /* Status */
+  --status-success: #22C55E;
+  --status-success-bg: #F0FDF4;
+  --status-warning: #F59E0B;
+  --status-warning-bg: #FFFBEB;
+  --status-error: #EF4444;
+  --status-error-bg: #FEF2F2;
+  --status-info: #3B82F6;
+  --status-info-bg: #EFF6FF;
+
+  /* Progress States */
+  --state-not-started: #9CA3AF;
+  --state-in-progress: #3B82F6;
+  --state-complete: #22C55E;
+  --state-needs-review: #F59E0B;
+
+  /* ============================================
+     TYPOGRAPHY
+     ============================================ */
+  --font-primary: 'Source Sans 3', system-ui, -apple-system, sans-serif;
+
+  /* ============================================
+     SPACING (8px base)
+     ============================================ */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+
+  /* ============================================
+     BORDER RADII
+     ============================================ */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-full: 9999px;
+
+  /* ============================================
+     SHADOWS
+     ============================================ */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+  --shadow-focus: 0 0 0 3px rgba(107, 155, 138, 0.4);
+
+  /* ============================================
+     TIMING
+     ============================================ */
+  --duration-instant: 100ms;
+  --duration-fast: 200ms;
+  --duration-normal: 300ms;
+  --duration-slow: 500ms;
 }
 
 * {
@@ -27,68 +131,33 @@ html {
 }
 
 body {
-  background: hsl(var(--level-background));
-  color: hsl(var(--level-foreground));
+  background: var(--surface-page);
+  color: var(--text-primary);
+  font-family: var(--font-primary);
   min-height: 100vh;
-}
-
-@layer utilities {
-  .level-gradient-text {
-    background: linear-gradient(135deg, hsl(175 70% 50%) 0%, hsl(172 55% 45%) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .level-gradient-bg {
-    background: linear-gradient(135deg, hsl(172 55% 35%) 0%, hsl(175 70% 40%) 100%);
-  }
-
-  .level-card {
-    background: hsl(var(--level-card));
-    border: 1px solid hsl(172 55% 35% / 0.2);
-    border-radius: 0.75rem;
-  }
-
-  .level-card-hover {
-    transition: all 0.3s ease;
-  }
-
-  .level-card-hover:hover {
-    transform: translateY(-4px);
-    border-color: hsl(172 55% 35% / 0.4);
-    box-shadow: 0 20px 40px -12px hsl(172 55% 35% / 0.25);
-  }
-
-  .level-glow {
-    box-shadow: 0 0 60px hsl(172 55% 35% / 0.3);
-  }
 }
 
 @layer components {
   .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 1.5rem;
+    padding: 0 var(--space-4);
   }
 
-  .section-padding {
-    padding: 5rem 0;
+  @media (min-width: 768px) {
+    .container {
+      padding: 0 var(--space-6);
+    }
   }
+}
 
-  .btn-primary {
-    background: linear-gradient(135deg, hsl(172 55% 35%) 0%, hsl(175 70% 40%) 100%);
-    color: white;
-    padding: 0.875rem 2rem;
-    border-radius: 0.5rem;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    border: none;
-    cursor: pointer;
-  }
-
-  .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 30px -8px hsl(172 55% 35% / 0.5);
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

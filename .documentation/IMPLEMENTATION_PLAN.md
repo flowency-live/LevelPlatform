@@ -305,7 +305,7 @@ Frontend and backend can be built in parallel by sharing TypeScript interfaces.
 | `lib/types/tenant.ts` | TenantId, LocationId, CohortId types | ✓ Done (in student.ts) |
 | `lib/types/api.ts` | API request/response shapes | TODO |
 | `lib/reference-data/benchmarks.ts` | GB1-GB8 definitions | ✓ Done |
-| `lib/mock-data/students.ts` | 50 demo students with varied progress | ✓ Done |
+| `lib/mock-data/students.ts` | 20 demo students with varied progress (none 100%) | ✓ Done |
 
 ---
 
@@ -374,7 +374,7 @@ Frontend and backend can be built in parallel by sharing TypeScript interfaces.
 | Task | File | Status |
 |------|------|--------|
 | Shared TypeScript interfaces | `lib/types/student.ts` | ✓ Done |
-| Seed students (50) | `lib/mock-data/students.ts` | ✓ Done |
+| Seed students (20) | `lib/mock-data/students.ts` | ✓ Done |
 | useMockData hook | `lib/hooks/useMockData.ts` | TODO (use in components) |
 
 ### B2. Core UI Components ✅ COMPLETE
@@ -386,14 +386,16 @@ Frontend and backend can be built in parallel by sharing TypeScript interfaces.
 | Card | `components/ui/Card.test.tsx` | ✓ Done (15 tests) |
 | Checkbox | `components/ui/Checkbox.test.tsx` | ✓ Done (11 tests) |
 
-### B2b. Domain Components
+### B2b. Domain Components ✅ COMPLETE
 
 | Task | Test File | Status |
 |------|-----------|--------|
-| ProgressRing | `components/shared/ProgressRing.test.tsx` | TODO |
-| BenchmarkCard | `components/benchmark/BenchmarkCard.test.tsx` | TODO |
-| ActivityCheckbox | `components/benchmark/ActivityCheckbox.test.tsx` | TODO |
-| Navigation | `components/shared/Navigation.test.tsx` | TODO |
+| ProgressRing | `components/shared/ProgressRing.test.tsx` | ✓ Done (19 tests) |
+| BenchmarkCard | `components/benchmark/BenchmarkCard.test.tsx` | ✓ Done (15 tests) |
+| ActivityBlock | `components/benchmark/ActivityBlock.test.tsx` | ✓ Done (17 tests) |
+| BottomNav | `components/shared/BottomNav.test.tsx` | ✓ Done (17 tests) |
+| TopNav | `components/shared/TopNav.test.tsx` | ✓ Done (13 tests) |
+| EvidenceUpload | `components/evidence/EvidenceUpload.test.tsx` | ✓ Done (14 tests) |
 
 ### B2c. Auth Pages ✅ COMPLETE
 
@@ -404,13 +406,16 @@ Frontend and backend can be built in parallel by sharing TypeScript interfaces.
 | Login page | `app/(auth)/login/page.test.tsx` | ✓ Done (9 tests) |
 | MFA page (staff only) | `app/(auth)/login/mfa/page.test.tsx` | TODO |
 
-### B3. Student Portal Pages
+### B3. Student Portal Pages 🟡 IN PROGRESS
 
 | Task | Test File | Status |
 |------|-----------|--------|
-| Student Dashboard | `app/(student)/page.test.tsx` | TODO |
-| Benchmark Detail | `app/(student)/benchmark/[id]/page.test.tsx` | TODO |
+| Student Layout | `app/(student)/layout.test.tsx` | ✓ Done (10 tests) |
+| Student Dashboard | `app/(student)/page.test.tsx` | ✓ Done (11 tests) |
+| Benchmark Detail | `app/(student)/benchmark/[id]/page.test.tsx` | ✓ Done (11 tests) |
+| useStudentProgress hook | `lib/hooks/useStudentProgress.ts` | ✓ Done |
 | SMART Targets | `app/(student)/targets/page.test.tsx` | TODO |
+| Employers Page | `app/(student)/employers/page.test.tsx` | TODO |
 
 ### B4. Teacher Portal Pages
 
@@ -528,17 +533,17 @@ const DEMO_TENANT = {
     id: 'ORG-ARNFIELD-SCHOOLS',
     name: 'Arnfield Schools',
     locations: [
-      { id: 'LOC-EAST', name: 'Arnfield School East', studentCount: 25 },
-      { id: 'LOC-WEST', name: 'Arnfield School West', studentCount: 25 },
+      { id: 'LOC-EAST', name: 'Arnfield School East', studentCount: 10 },
+      { id: 'LOC-WEST', name: 'Arnfield School West', studentCount: 10 },
     ]
   }]
 };
 
-// 50 students with varied progress:
-// - 10 students: 80%+ complete (green)
-// - 20 students: 40-79% complete (yellow/orange)
-// - 15 students: 10-39% complete (orange/red)
-// - 5 students: <10% complete (red)
+// 20 students with varied progress (none 100% complete):
+// - 5 students: 70-90% complete (green, almost there)
+// - 8 students: 40-69% complete (yellow/orange)
+// - 5 students: 15-39% complete (orange/red)
+// - 2 students: <15% complete (red, just started)
 
 // This creates realistic heatmap visualization
 ```
@@ -621,7 +626,7 @@ Students × Benchmarks grid with color-coded cells. Click to drill down.
 
 ### Phase 8: Demo Data
 - Arnfield Care tenant seed
-- 50 students with varied progress
+- 20 students with varied progress (none 100% complete)
 - Seed script for DynamoDB
 
 ---
@@ -636,8 +641,10 @@ Students × Benchmarks grid with color-coded cells. Click to drill down.
 | Phase 4: Application Services | ✅ Complete | 29/03/2026 | 29/03/2026 |
 | Phase 5: API Layer (Next.js Routes) | ✅ Complete | 29/03/2026 | 29/03/2026 |
 | Phase 5b: AWS Lambda Handlers | Not Started | - | - |
-| Phase 6: UI Components | 🟡 In Progress | 29/03/2026 | - |
-| Phase 7: Pages | 🟡 In Progress | 29/03/2026 | - |
+| Phase 6: UI Components | ✅ Complete | 29/03/2026 | 29/03/2026 |
+| Phase 7: Pages (Student) | 🟡 In Progress | 29/03/2026 | - |
+| Phase 7: Pages (Teacher) | Not Started | - | - |
+| Phase 7: Pages (Admin) | Not Started | - | - |
 | Phase 8: Demo Data | ✅ Complete | 29/03/2026 | 29/03/2026 |
 
 ### Test Coverage Summary
@@ -648,8 +655,10 @@ Students × Benchmarks grid with color-coded cells. Click to drill down.
 | Domain (value objects, entities, repos) | 81 |
 | Application Services | 19 |
 | Backend Total (lib/) | 138 |
-| UI Components | 63 |
-| **Total** | **228** |
+| UI Components (Core) | 63 |
+| Shared Components (ProgressRing, Nav, etc.) | 95 |
+| Student Portal Pages | 32 |
+| **Total** | **340** |
 
 ### Completed Items
 
@@ -690,7 +699,7 @@ Students × Benchmarks grid with color-coded cells. Click to drill down.
 
 **Phase 8: Demo Data (Frontend Support)**
 - [x] Shared TypeScript interfaces (`lib/types/student.ts`)
-- [x] Mock data with 50 demo students (`lib/mock-data/students.ts`)
+- [x] Mock data with 20 demo students, none 100% complete (`lib/mock-data/students.ts`)
 
 **Phase 6: UI Components (Elevate Design System)**
 - [x] Design tokens - Elevate four-layer color system (`app/globals.css`)
@@ -701,10 +710,28 @@ Students × Benchmarks grid with color-coded cells. Click to drill down.
 - [x] Card component with interactive variant (15 tests) - `components/ui/Card.tsx`
 - [x] Checkbox component with 44px touch target (11 tests) - `components/ui/Checkbox.tsx`
 
+**Phase 6: Shared Components (Dashboard)** ✅ COMPLETE
+- [x] ProgressRing - circular progress indicator (19 tests) - `components/shared/ProgressRing.tsx`
+- [x] BenchmarkCard - benchmark summary card (15 tests) - `components/benchmark/BenchmarkCard.tsx`
+- [x] ActivityBlock - checkbox activity completion (17 tests) - `components/benchmark/ActivityBlock.tsx`
+- [x] BottomNav - mobile student navigation (17 tests) - `components/shared/BottomNav.tsx`
+- [x] TopNav - staff horizontal navigation (13 tests) - `components/shared/TopNav.tsx`
+- [x] EvidenceUpload - mocked upload UI (14 tests) - `components/evidence/EvidenceUpload.tsx`
+
 **Phase 7: Pages (Login)**
 - [x] Auth redirect logic with role-based routing (6 tests) - `lib/auth/redirect.ts`
 - [x] Auth layout centered container (4 tests) - `app/(auth)/layout.tsx`
 - [x] Login page with form validation (9 tests) - `app/(auth)/login/page.tsx`
+
+**Phase 7: Pages (Student Portal)** 🟡 IN PROGRESS
+- [x] Student layout with bottom nav (10 tests) - `app/(student)/layout.tsx`
+- [x] Student dashboard with benchmark grid (11 tests) - `app/(student)/page.tsx`
+- [x] Benchmark detail with activity list (11 tests) - `app/(student)/benchmark/[id]/page.tsx`
+- [x] useStudentProgress hook - `lib/hooks/useStudentProgress.ts`
+- [ ] SMARTTargetCard component - TODO
+- [ ] SMART Targets page - TODO
+- [ ] EmployerCard component - TODO
+- [ ] Employers page - TODO
 
 ---
 
@@ -748,8 +775,11 @@ Elevate-CICD-{stage}    → Deploy role (imports existing OIDC provider)
 
 - Infrastructure: 27 tests passing (2 stacks)
 - Domain + Application: 138 tests passing (value objects, entities, repositories, use cases)
-- UI Components: 63 tests passing (Button, Input, Card, Checkbox, Auth)
-- Total: 228 tests
+- Core UI Components: 63 tests passing (Button, Input, Card, Checkbox)
+- Auth Pages: 19 tests passing (redirect, layout, login)
+- Shared Components: 95 tests passing (ProgressRing, BenchmarkCard, ActivityBlock, BottomNav, TopNav, EvidenceUpload)
+- Student Portal: 32 tests passing (layout, dashboard, benchmark detail)
+- **Total: 340 tests passing** (excluding 1 pre-existing broken test for missing seeded-repositories module)
 
 ### Deployed Resources (dev)
 
