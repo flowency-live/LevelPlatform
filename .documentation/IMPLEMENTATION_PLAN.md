@@ -236,68 +236,177 @@ ASDAN Summary (/admin/asdan)
 
 ---
 
-## Implementation Order (DDD + TDD)
+## Parallel Implementation Tracks
 
-### Phase 1: Domain Foundation (Week 1)
+Frontend and backend can be built in parallel by sharing TypeScript interfaces.
 
-| Order | Task | Test File | Implementation |
-|-------|------|-----------|----------------|
-| 1 | StudentId value object | `domain/student/StudentId.test.ts` | `StudentId.ts` |
-| 2 | BenchmarkId value object | `domain/benchmark/BenchmarkId.test.ts` | `BenchmarkId.ts` |
-| 3 | Student entity | `domain/student/Student.test.ts` | `Student.ts` |
-| 4 | BenchmarkProgress entity | `domain/benchmark/BenchmarkProgress.test.ts` | `BenchmarkProgress.ts` |
-| 5 | Activity entity | `domain/benchmark/Activity.test.ts` | `Activity.ts` |
-| 6 | Multi-tenant value objects | `domain/tenant/*.test.ts` | `TenantId.ts`, etc. |
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                        SHARED CONTRACTS (Build First)                    │
+│                                                                          │
+│  lib/types/           ← TypeScript interfaces used by both tracks        │
+│  ├─ student.ts        ← Student, BenchmarkProgress, Activity interfaces │
+│  ├─ tenant.ts         ← TenantId, LocationId, CohortId types            │
+│  └─ api.ts            ← Request/response shapes                         │
+│                                                                          │
+│  lib/reference-data/  ← Static data (already done)                      │
+│  └─ benchmarks.ts     ← GB1-GB8 definitions ✓                           │
+│                                                                          │
+│  lib/mock-data/       ← Seed data for frontend development              │
+│  └─ students.ts       ← 50 demo students with varied progress           │
+└─────────────────────────────────────────────────────────────────────────┘
+                              │
+           ┌──────────────────┴──────────────────┐
+           ▼                                     ▼
+┌─────────────────────────┐        ┌─────────────────────────┐
+│   TRACK A: BACKEND      │        │   TRACK B: FRONTEND     │
+│   (This thread)         │        │   (Separate thread)     │
+│                         │        │                         │
+│ 1. Domain value objects │        │ 1. Mock data service    │
+│    - StudentId          │        │    - InMemoryDataStore  │
+│    - TenantId, etc.     │        │    - useMockData hook   │
+│                         │        │                         │
+│ 2. Domain entities      │        │ 2. UI Components        │
+│    - Student            │        │    - BenchmarkCard      │
+│    - BenchmarkProgress  │        │    - ProgressRing       │
+│                         │        │    - ActivityCheckbox   │
+│ 3. Repository layer     │        │                         │
+│    - Interface          │        │ 3. Pages (Student view) │
+│    - In-memory impl     │        │    - Dashboard          │
+│    - DynamoDB impl      │        │    - Benchmark detail   │
+│                         │        │                         │
+│ 4. Application services │        │ 4. Pages (Teacher view) │
+│    - GetStudentProgress │        │    - Heatmap            │
+│    - CompleteActivity   │        │    - Drill-down         │
+│                         │        │                         │
+│ 5. API endpoints        │        │ 5. Pages (Admin view)   │
+│    - Next.js routes     │        │    - Dashboard          │
+│    - Lambda migration   │        │    - Reports            │
+└─────────────────────────┘        └─────────────────────────┘
+           │                                     │
+           └──────────────────┬──────────────────┘
+                              ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│                        INTEGRATION POINT                                 │
+│                                                                          │
+│  When backend API is ready:                                             │
+│  1. Replace mock data service with real API calls                       │
+│  2. Frontend already uses correct types - minimal changes               │
+└─────────────────────────────────────────────────────────────────────────┘
+```
 
-### Phase 2: Reference Data + Repository (Week 1-2)
+---
 
-| Order | Task | Test File | Implementation |
-|-------|------|-----------|----------------|
-| 7 | Gatsby Benchmarks reference | `reference-data/benchmarks.test.ts` | `benchmarks.ts` |
-| 8 | ASDAN mapping reference | `reference-data/asdan.test.ts` | `asdan.ts` |
-| 9 | Student repository interface | `domain/student/StudentRepository.test.ts` | Interface |
-| 10 | In-memory repository (for dev) | `infrastructure/InMemoryStudentRepository.test.ts` | Implementation |
-| 11 | DynamoDB repository | `infrastructure/DynamoDBStudentRepository.test.ts` | Implementation |
+## Shared Contracts (Build First - Both Tracks Need These)
 
-### Phase 3: Application Services (Week 2)
+| File | Purpose | Status |
+|------|---------|--------|
+| `lib/types/student.ts` | Student, BenchmarkProgress, Activity interfaces | TODO |
+| `lib/types/tenant.ts` | TenantId, LocationId, CohortId types | TODO |
+| `lib/types/api.ts` | API request/response shapes | TODO |
+| `lib/reference-data/benchmarks.ts` | GB1-GB8 definitions | ✓ Done |
+| `lib/mock-data/students.ts` | 50 demo students with varied progress | TODO |
 
-| Order | Task | Test File | Implementation |
-|-------|------|-----------|----------------|
-| 12 | GetStudentProgress use case | `application/GetStudentProgress.test.ts` | Use case |
-| 13 | CompleteActivity use case | `application/CompleteActivity.test.ts` | Use case |
-| 14 | GetBenchmarkHeatmap use case | `application/GetBenchmarkHeatmap.test.ts` | Use case |
-| 15 | GetSchoolCompliance use case | `application/GetSchoolCompliance.test.ts` | Use case |
+---
 
-### Phase 4: API Layer (Week 2-3)
+## Track A: Backend (This Thread)
 
-| Order | Task | Test File | Implementation |
-|-------|------|-----------|----------------|
-| 16 | Student progress endpoint | `api/student/progress.test.ts` | Route handler |
-| 17 | Complete activity endpoint | `api/student/activity.test.ts` | Route handler |
-| 18 | Teacher heatmap endpoint | `api/teacher/heatmap.test.ts` | Route handler |
-| 19 | Admin compliance endpoint | `api/admin/compliance.test.ts` | Route handler |
+### A1. Domain Value Objects
 
-### Phase 5: UI Components (Week 3-4)
+| Task | Test File | Status |
+|------|-----------|--------|
+| BenchmarkId | `lib/domain/benchmark/BenchmarkId.test.ts` | ✓ Done |
+| ActivityId | `lib/domain/benchmark/ActivityId.test.ts` | ✓ Done |
+| StudentId | `lib/domain/student/StudentId.test.ts` | TODO |
+| TenantId | `lib/domain/tenant/TenantId.test.ts` | TODO |
+| LocationId | `lib/domain/tenant/LocationId.test.ts` | TODO |
+| CohortId | `lib/domain/tenant/CohortId.test.ts` | TODO |
 
-| Order | Task | Test File | Implementation |
-|-------|------|-----------|----------------|
-| 20 | BenchmarkCard | `components/benchmark/BenchmarkCard.test.tsx` | Component |
-| 21 | ActivityCheckbox | `components/benchmark/ActivityCheckbox.test.tsx` | Component |
-| 22 | ProgressRing | `components/shared/ProgressRing.test.tsx` | Component |
-| 23 | BenchmarkHeatmap | `components/teacher/BenchmarkHeatmap.test.tsx` | Component |
-| 24 | DrillDownPanel | `components/shared/DrillDownPanel.test.tsx` | Component |
+### A2. Domain Entities
 
-### Phase 6: Pages (Week 4)
+| Task | Test File | Status |
+|------|-----------|--------|
+| Student entity | `lib/domain/student/Student.test.ts` | TODO |
+| BenchmarkProgress entity | `lib/domain/benchmark/BenchmarkProgress.test.ts` | TODO |
+| Activity entity | `lib/domain/benchmark/Activity.test.ts` | TODO |
 
-| Order | Task | Test File | Implementation |
-|-------|------|-----------|----------------|
-| 25 | Home (role selector) | `app/page.test.tsx` | Page |
-| 26 | Student dashboard | `app/student/page.test.tsx` | Page |
-| 27 | Student benchmark detail | `app/student/benchmark/[id]/page.test.tsx` | Page |
-| 28 | Teacher dashboard | `app/teacher/page.test.tsx` | Page |
-| 29 | Teacher student drill-down | `app/teacher/student/[id]/page.test.tsx` | Page |
-| 30 | Admin dashboard | `app/admin/page.test.tsx` | Page |
-| 31 | Admin Ofsted reports | `app/admin/reports/page.test.tsx` | Page |
+### A3. Repository Layer
+
+| Task | Test File | Status |
+|------|-----------|--------|
+| StudentRepository interface | `lib/domain/student/StudentRepository.ts` | TODO |
+| InMemoryStudentRepository | `lib/infrastructure/InMemoryStudentRepository.test.ts` | TODO |
+| DynamoDBStudentRepository | `lib/infrastructure/DynamoDBStudentRepository.test.ts` | TODO |
+
+### A4. Application Services
+
+| Task | Test File | Status |
+|------|-----------|--------|
+| GetStudentProgress | `lib/application/GetStudentProgress.test.ts` | TODO |
+| CompleteActivity | `lib/application/CompleteActivity.test.ts` | TODO |
+| GetBenchmarkHeatmap | `lib/application/GetBenchmarkHeatmap.test.ts` | TODO |
+
+### A5. API Endpoints
+
+| Task | Test File | Status |
+|------|-----------|--------|
+| GET /api/student/progress | `app/api/student/progress/route.test.ts` | TODO |
+| POST /api/student/activity | `app/api/student/activity/route.test.ts` | TODO |
+| GET /api/teacher/heatmap | `app/api/teacher/heatmap/route.test.ts` | TODO |
+
+---
+
+## Track B: Frontend (Separate Thread)
+
+### B1. Mock Data Service
+
+| Task | File | Status |
+|------|------|--------|
+| Mock data store | `lib/mock-data/store.ts` | TODO |
+| Seed students (50) | `lib/mock-data/students.ts` | TODO |
+| useMockData hook | `lib/hooks/useMockData.ts` | TODO |
+
+### B2. Shared Components
+
+| Task | Test File | Status |
+|------|-----------|--------|
+| ProgressRing | `components/shared/ProgressRing.test.tsx` | TODO |
+| BenchmarkCard | `components/benchmark/BenchmarkCard.test.tsx` | TODO |
+| ActivityCheckbox | `components/benchmark/ActivityCheckbox.test.tsx` | TODO |
+| Navigation | `components/shared/Navigation.test.tsx` | TODO |
+
+### B3. Student Portal Pages
+
+| Task | Test File | Status |
+|------|-----------|--------|
+| Student Dashboard | `app/(student)/page.test.tsx` | TODO |
+| Benchmark Detail | `app/(student)/benchmark/[id]/page.test.tsx` | TODO |
+| SMART Targets | `app/(student)/targets/page.test.tsx` | TODO |
+
+### B4. Teacher Portal Pages
+
+| Task | Test File | Status |
+|------|-----------|--------|
+| Teacher Dashboard (Heatmap) | `app/(teacher)/page.test.tsx` | TODO |
+| Student Drill-down | `app/(teacher)/student/[id]/page.test.tsx` | TODO |
+
+### B5. Admin Portal Pages
+
+| Task | Test File | Status |
+|------|-----------|--------|
+| Admin Dashboard | `app/(admin)/page.test.tsx` | TODO |
+| Ofsted Reports | `app/(admin)/reports/page.test.tsx` | TODO |
+
+---
+
+## Integration Checklist
+
+When connecting frontend to real backend:
+
+- [ ] Replace `useMockData` with `useSWR`/`useQuery` + real API
+- [ ] Remove mock data imports
+- [ ] Verify types match (should be identical)
+- [ ] Test with real DynamoDB data
 
 ---
 
