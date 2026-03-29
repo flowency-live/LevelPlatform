@@ -90,6 +90,28 @@ describe('StudentLayout', () => {
     });
   });
 
+  describe('tenant header styling', () => {
+    it('applies tenant primary background to header', () => {
+      render(
+        <StudentLayout>
+          <div>Content</div>
+        </StudentLayout>
+      );
+      const header = screen.getByRole('banner');
+      expect(header).toHaveClass('bg-tenant-primary');
+    });
+
+    it('applies white text to header', () => {
+      render(
+        <StudentLayout>
+          <div>Content</div>
+        </StudentLayout>
+      );
+      const header = screen.getByRole('banner');
+      expect(header).toHaveClass('text-white');
+    });
+  });
+
   describe('layout structure', () => {
     it('has main content area', () => {
       render(

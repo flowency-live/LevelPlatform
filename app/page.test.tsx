@@ -3,8 +3,8 @@ import Home from './page';
 
 // Mock next/link
 jest.mock('next/link', () => {
-  return function MockLink({ children, href }: { children: React.ReactNode; href: string }) {
-    return <a href={href}>{children}</a>;
+  return function MockLink({ children, href, className }: { children: React.ReactNode; href: string; className?: string }) {
+    return <a href={href} className={className}>{children}</a>;
   };
 });
 
@@ -45,6 +45,30 @@ describe('Landing Page', () => {
     it('mentions Gatsby Benchmarks', () => {
       render(<Home />);
       expect(screen.getByText(/8 benchmarks/i)).toBeInTheDocument();
+    });
+  });
+
+  describe('styling', () => {
+    it('applies page background surface colour', () => {
+      render(<Home />);
+      const container = screen.getByTestId('portal-page');
+      expect(container).toHaveClass('bg-surface-page');
+    });
+
+    it('portal cards have proper styling with shadow', () => {
+      render(<Home />);
+      const cards = screen.getAllByRole('article');
+      expect(cards.length).toBe(3);
+      cards.forEach((card) => {
+        expect(card).toHaveClass('bg-white');
+        expect(card).toHaveClass('shadow-sm');
+      });
+    });
+
+    it('portal links use tenant primary colour', () => {
+      render(<Home />);
+      const studentLink = screen.getByRole('link', { name: /enter as student/i });
+      expect(studentLink).toHaveClass('bg-tenant-primary');
     });
   });
 });
