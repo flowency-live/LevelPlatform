@@ -317,10 +317,10 @@ Frontend and backend can be built in parallel by sharing TypeScript interfaces.
 |------|-----------|--------|
 | BenchmarkId | `lib/domain/benchmark/BenchmarkId.test.ts` | ✓ Done |
 | ActivityId | `lib/domain/benchmark/ActivityId.test.ts` | ✓ Done |
-| StudentId | `lib/domain/student/StudentId.test.ts` | TODO |
-| TenantId | `lib/domain/tenant/TenantId.test.ts` | TODO |
-| LocationId | `lib/domain/tenant/LocationId.test.ts` | TODO |
-| CohortId | `lib/domain/tenant/CohortId.test.ts` | TODO |
+| StudentId | `lib/domain/student/StudentId.test.ts` | ✓ Done |
+| TenantId | `lib/domain/tenant/TenantId.test.ts` | ✓ Done |
+| LocationId | `lib/domain/tenant/LocationId.test.ts` | ✓ Done |
+| CohortId | `lib/domain/tenant/CohortId.test.ts` | ✓ Done |
 
 ### A2. Domain Entities
 

@@ -93,3 +93,31 @@ jobs:
 
       - name: CDK Deploy
         run: npx cdk deploy --all --require-approval never --context stage=${{ github.event.inputs.stage || 'dev' }}
+
+  notify:
+    name: Notify
+    needs: [test, deploy]
+    runs-on: ubuntu-latest
+    if: always() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+
+    steps:
+      - name: Slack notification
+        if: vars.SLACK_WEBHOOK_URL != ''
+        run: |
+          TEST_OK="${{ needs.test.result }}"
+          DEPLOY_OK="${{ needs.deploy.result }}"
+
+          if [[ "$TEST_OK" == "success" && "$DEPLOY_OK" == "success" ]]; then
+            STATUS="SUCCESS"
+            EMOJI=":white_check_mark:"
+          elif [[ "$DEPLOY_OK" == "skipped" ]]; then
+            STATUS="SUCCESS (deploy skipped)"
+            EMOJI=":white_check_mark:"
+          else
+            STATUS="FAILED"
+            EMOJI=":x:"
+          fi
+
+          curl -X POST "${{ vars.SLACK_WEBHOOK_URL }}" \
+            -H 'Content-type: application/json' \
+            -d "{\"text\": \"LevelPlatform Deploy: $STATUS $EMOJI\nCommit: ${{ github.sha }}\nBy: ${{ github.actor }}\"}"
