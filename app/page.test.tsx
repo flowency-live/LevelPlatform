@@ -10,33 +10,33 @@ jest.mock('next/link', () => {
 
 describe('Landing Page', () => {
   describe('header', () => {
-    it('displays Elevate branding', () => {
+    it('displays role selection title', () => {
       render(<Home />);
-      expect(screen.getByText(/elevate/i)).toBeInTheDocument();
+      expect(screen.getByText(/who are you today/i)).toBeInTheDocument();
     });
 
-    it('shows tagline about careers guidance', () => {
+    it('shows tagline about Gatsby in portal descriptions', () => {
       render(<Home />);
       expect(screen.getAllByText(/gatsby/i).length).toBeGreaterThanOrEqual(1);
     });
   });
 
   describe('portal cards', () => {
-    it('shows Student Portal card', () => {
+    it('shows Student role card with enter link', () => {
       render(<Home />);
-      expect(screen.getByText(/student portal/i)).toBeInTheDocument();
+      expect(screen.getByText('Student')).toBeInTheDocument();
       expect(screen.getByRole('link', { name: /enter as student/i })).toHaveAttribute('href', '/student');
     });
 
-    it('shows Teacher Dashboard card', () => {
+    it('shows Teacher role card with enter link', () => {
       render(<Home />);
-      expect(screen.getByText(/teacher dashboard/i)).toBeInTheDocument();
+      expect(screen.getByText('Teacher / Staff')).toBeInTheDocument();
       expect(screen.getByRole('link', { name: /enter as teacher/i })).toHaveAttribute('href', '/teacher');
     });
 
-    it('shows Admin/Management card', () => {
+    it('shows School Leadership card with enter link', () => {
       render(<Home />);
-      expect(screen.getByText(/school management/i)).toBeInTheDocument();
+      expect(screen.getByText('School Leadership')).toBeInTheDocument();
       expect(screen.getByRole('link', { name: /enter.*management/i })).toHaveAttribute('href', '/admin');
     });
   });
@@ -55,20 +55,16 @@ describe('Landing Page', () => {
       expect(container).toHaveClass('bg-surface-page');
     });
 
-    it('portal cards have proper styling with shadow', () => {
+    it('portal cards are rendered as articles', () => {
       render(<Home />);
       const cards = screen.getAllByRole('article');
       expect(cards.length).toBe(3);
-      cards.forEach((card) => {
-        expect(card).toHaveClass('bg-white');
-        expect(card).toHaveClass('shadow-sm');
-      });
     });
 
-    it('portal links use tenant primary colour', () => {
+    it('portal links use persona-specific colours', () => {
       render(<Home />);
       const studentLink = screen.getByRole('link', { name: /enter as student/i });
-      expect(studentLink).toHaveClass('bg-tenant-primary');
+      expect(studentLink).toHaveClass('bg-persona-student');
     });
   });
 });

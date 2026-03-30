@@ -61,10 +61,10 @@ describe('ProgressRing', () => {
       expect(ring).toHaveClass('w-16', 'h-16');
     });
 
-    it('renders large size (96px)', () => {
+    it('renders large size (80px)', () => {
       render(<ProgressRing percent={50} size="lg" data-testid="ring" />);
       const ring = screen.getByTestId('ring');
-      expect(ring).toHaveClass('w-24', 'h-24');
+      expect(ring).toHaveClass('w-20', 'h-20');
     });
   });
 

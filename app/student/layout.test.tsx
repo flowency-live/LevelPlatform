@@ -53,16 +53,18 @@ describe('StudentLayout', () => {
       expect(screen.getByRole('navigation', { name: /main navigation/i })).toBeInTheDocument();
     });
 
-    it('shows all 4 navigation items', () => {
+    it('shows all navigation items', () => {
       render(
         <StudentLayout>
           <div>Content</div>
         </StudentLayout>
       );
-      expect(screen.getByText('Home')).toBeInTheDocument();
-      expect(screen.getByText('Plan')).toBeInTheDocument();
-      expect(screen.getByText('Targets')).toBeInTheDocument();
-      expect(screen.getByText('Profile')).toBeInTheDocument();
+      // Navigation items appear in both sidebar and bottom nav
+      expect(screen.getAllByText('Home').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText('My Plan').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText('Targets').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText('Employers').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText('Profile').length).toBeGreaterThanOrEqual(1);
     });
 
     it('has correct navigation hrefs', () => {
@@ -71,21 +73,34 @@ describe('StudentLayout', () => {
           <div>Content</div>
         </StudentLayout>
       );
-      expect(screen.getByRole('link', { name: /home/i })).toHaveAttribute('href', '/student');
-      expect(screen.getByRole('link', { name: /plan/i })).toHaveAttribute('href', '/student/plan');
-      expect(screen.getByRole('link', { name: /targets/i })).toHaveAttribute('href', '/student/targets');
-      expect(screen.getByRole('link', { name: /profile/i })).toHaveAttribute('href', '/student/profile');
+      // Links appear in both sidebar and bottom nav
+      const homeLinks = screen.getAllByRole('link', { name: /home/i });
+      expect(homeLinks.some(link => link.getAttribute('href') === '/student')).toBe(true);
+
+      const planLinks = screen.getAllByRole('link', { name: /my plan/i });
+      expect(planLinks.some(link => link.getAttribute('href') === '/student/plan')).toBe(true);
+
+      const targetLinks = screen.getAllByRole('link', { name: /targets/i });
+      expect(targetLinks.some(link => link.getAttribute('href') === '/student/targets')).toBe(true);
+
+      const employerLinks = screen.getAllByRole('link', { name: /employers/i });
+      expect(employerLinks.some(link => link.getAttribute('href') === '/student/employers')).toBe(true);
+
+      const profileLinks = screen.getAllByRole('link', { name: /profile/i });
+      expect(profileLinks.some(link => link.getAttribute('href') === '/student/profile')).toBe(true);
     });
   });
 
   describe('persona styling', () => {
-    it('applies student persona colour to active nav item', () => {
+    it('applies student persona colour to active nav item in bottom nav', () => {
       render(
         <StudentLayout>
           <div>Content</div>
         </StudentLayout>
       );
-      const activeLink = screen.getByRole('link', { name: /home/i });
+      // Bottom nav uses persona colors for active state
+      const bottomNav = screen.getByRole('navigation', { name: /main navigation/i });
+      const activeLink = bottomNav.querySelector('a[aria-current="page"]');
       expect(activeLink).toHaveClass('text-persona-student');
     });
   });
@@ -122,24 +137,26 @@ describe('StudentLayout', () => {
       expect(screen.getByRole('main')).toBeInTheDocument();
     });
 
-    it('applies page background colour', () => {
+    it('applies page background colour to layout container', () => {
       render(
         <StudentLayout>
           <div>Content</div>
         </StudentLayout>
       );
-      const main = screen.getByRole('main');
-      expect(main).toHaveClass('bg-surface-page');
+      // Background is on the outer container, not main
+      const container = screen.getByRole('main').parentElement?.parentElement;
+      expect(container).toHaveClass('bg-surface-page');
     });
 
-    it('provides padding for fixed bottom nav', () => {
+    it('provides padding for fixed bottom nav on mobile', () => {
       render(
         <StudentLayout>
           <div>Content</div>
         </StudentLayout>
       );
       const main = screen.getByRole('main');
-      expect(main).toHaveClass('pb-16');
+      // pb-20 for mobile bottom nav, lg:pb-8 for desktop
+      expect(main).toHaveClass('pb-20');
     });
   });
 });

@@ -79,7 +79,7 @@
   /* ============================================
      TYPOGRAPHY
      ============================================ */
-  --font-primary: 'Source Sans 3', system-ui, -apple-system, sans-serif;
+  --font-primary: var(--font-source-sans), 'Source Sans 3', system-ui, -apple-system, sans-serif;
 
   /* ============================================
      SPACING (8px base)

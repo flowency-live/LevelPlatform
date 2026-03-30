@@ -126,7 +126,9 @@ describe('BottomNav', () => {
         <BottomNav items={defaultItems} activeHref="/student" persona="student" />
       );
       const nav = screen.getByRole('navigation');
-      expect(nav).toHaveClass('h-16');
+      // Height is set on the inner ul element at 68px for touch targets
+      const list = nav.querySelector('ul');
+      expect(list).toHaveClass('h-[68px]');
     });
 
     it('spans full width', () => {

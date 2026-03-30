@@ -22,32 +22,15 @@ describe('BenchmarkCard', () => {
       expect(screen.getByText('GB1')).toBeInTheDocument();
     });
 
-    it('renders progress ring with correct percentage', () => {
+    it('renders percentage in mini progress indicator', () => {
       render(<BenchmarkCard {...defaultProps} />);
-      expect(screen.getByLabelText('75% complete')).toBeInTheDocument();
+      // Percentage shown in both mini indicator and progress section
+      expect(screen.getAllByText('75%').length).toBeGreaterThanOrEqual(1);
     });
 
     it('renders activity fraction', () => {
       render(<BenchmarkCard {...defaultProps} />);
-      expect(screen.getByText('6 of 8')).toBeInTheDocument();
-    });
-  });
-
-  describe('next activity', () => {
-    it('displays next activity when provided', () => {
-      render(
-        <BenchmarkCard
-          {...defaultProps}
-          nextActivity="Attend careers assembly"
-        />
-      );
-      expect(screen.getByText('Next:')).toBeInTheDocument();
-      expect(screen.getByText('Attend careers assembly')).toBeInTheDocument();
-    });
-
-    it('does not display next section when no next activity', () => {
-      render(<BenchmarkCard {...defaultProps} />);
-      expect(screen.queryByText('Next:')).not.toBeInTheDocument();
+      expect(screen.getByText('6/8 activities')).toBeInTheDocument();
     });
   });
 
@@ -64,16 +47,17 @@ describe('BenchmarkCard', () => {
       expect(card).toHaveClass('bg-white');
     });
 
-    it('has shadow styling', () => {
-      render(<BenchmarkCard {...defaultProps} data-testid="card" />);
-      const card = screen.getByTestId('card');
-      expect(card).toHaveClass('shadow-sm');
-    });
-
     it('has rounded corners', () => {
       render(<BenchmarkCard {...defaultProps} data-testid="card" />);
       const card = screen.getByTestId('card');
-      expect(card).toHaveClass('rounded-lg');
+      expect(card).toHaveClass('rounded-2xl');
+    });
+
+    it('has progress bar', () => {
+      render(<BenchmarkCard {...defaultProps} data-testid="card" />);
+      const card = screen.getByTestId('card');
+      const progressBar = card.querySelector('.h-1\\.5.bg-gray-100');
+      expect(progressBar).toBeInTheDocument();
     });
   });
 
@@ -115,6 +99,11 @@ describe('BenchmarkCard', () => {
           data-testid="card"
         />
       );
+      // At 100%, shows checkmark instead of percentage in mini indicator
+      const card = screen.getByTestId('card');
+      const checkmark = card.querySelector('svg path[d*="M5 13l4 4L19 7"]');
+      expect(checkmark).toBeInTheDocument();
+      // But percentage still shown in progress bar section
       expect(screen.getByText('100%')).toBeInTheDocument();
     });
 
@@ -127,7 +116,20 @@ describe('BenchmarkCard', () => {
           data-testid="card"
         />
       );
-      expect(screen.getByText('0%')).toBeInTheDocument();
+      expect(screen.getAllByText('0%').length).toBeGreaterThanOrEqual(1);
+    });
+
+    it('changes border color to success when complete', () => {
+      render(
+        <BenchmarkCard
+          {...defaultProps}
+          percentComplete={100}
+          activitiesComplete={8}
+          data-testid="card"
+        />
+      );
+      const card = screen.getByTestId('card');
+      expect(card).toHaveClass('border-l-status-success');
     });
   });
 
