@@ -56,7 +56,7 @@ const FeaturesSection = () => {
             Everything You Need to <span className="level-gradient-text">Level Up</span>
           </h2>
           <p className="text-level-muted-foreground max-w-2xl mx-auto">
-            Purpose-built for special education schools. Not a generic system adapted for SEND -
+            Purpose-built for alternative provision and specialist settings. Not a generic careers system -
             designed from the ground up for your unique needs.
           </p>
         </div>

@@ -16,10 +16,13 @@ Level is a digital career guidance platform that transforms how UK schools deliv
 
 ### 1.2 Target Users
 
-Primary: UK SEND schools (Special Educational Needs and Disabilities)
-- Mixed ability, age, and needs students (no form groups or year structures)
+Primary: UK alternative provision and specialist settings for vulnerable children
+- Students with varied life circumstances requiring specialist education
+- Mixed ability, age, and needs (no form groups or year structures)
 - Staff delivering career guidance across the curriculum
 - School leadership requiring Ofsted-ready compliance evidence
+
+**Note:** While these settings are often categorised alongside SEND provision, students may not have formal SEND classifications. They are vulnerable due to life circumstances (e.g., looked after children, exclusions, trauma, family situations) rather than diagnosed learning disabilities.
 
 ### 1.3 Key Differentiators
 
@@ -27,7 +30,7 @@ Primary: UK SEND schools (Special Educational Needs and Disabilities)
 |------------|-------------|-----------------|-------|
 | Gatsby Tracking | Manual spreadsheets | Visible to students | Hidden from students |
 | ASDAN Integration | Separate system | None | Native, student-facing |
-| SEND Accessibility | Limited | Retrofitted | Built-in from day one |
+| Accessibility | Limited | Retrofitted | Built-in from day one |
 | Evidence Capture | Filing cabinets | Basic upload | Text + URLs, mobile-first |
 | Ofsted Reporting | Days to compile | Generic | One-click export |
 | Cross-curriculum | Hard to track | Per-subject | Activities span subjects |
@@ -100,10 +103,11 @@ Level operates two parallel tracking systems with different visibility:
 ### 4.1 Student
 
 **Profile:**
-- SEND setting, ages 11-19
+- Vulnerable young person, ages 11-19
+- Alternative provision or specialist setting
 - Mixed ability, age, and needs
 - No assumptions about form groups or year structures
-- May have cognitive, physical, or communication needs
+- May have varied support needs based on life circumstances
 
 **Needs:**
 - Simple interface with minimal typing
@@ -625,14 +629,14 @@ The 8 Gatsby Benchmarks are the UK's statutory framework for careers guidance.
 
 ## 9. Reference: ASDAN Qualifications
 
-Common qualifications for SEND settings:
+Common qualifications for alternative provision and specialist settings:
 
 | Qualification | Levels | Description |
 |---------------|--------|-------------|
 | Certificate of Personal Effectiveness (CoPE) | 1, 2, 3 | Develops personal skills through challenges |
 | Personal Development Programme | Bronze, Silver, Gold | Portfolio-based personal development |
 | Employability | 1, 2 | Work-related skills and preparation |
-| Personal Progress | Entry Level | For learners with SEND, particularly PMLD |
+| Personal Progress | Entry Level | For learners needing additional support |
 | Short Courses | Various | 10-60 hour focused programmes |
 
 ---
@@ -728,7 +732,7 @@ The following are explicitly NOT included in the MVP:
 | CoPE | Certificate of Personal Effectiveness (ASDAN qualification) |
 | Gatsby Lead | Staff member responsible for Gatsby compliance (also called Careers Leader) |
 | RAG | Red, Amber, Green - status indicators |
-| SEND | Special Educational Needs and Disabilities |
+| Alternative Provision | Education outside mainstream for vulnerable students |
 | Ofsted | UK education inspection body |
 
 ---

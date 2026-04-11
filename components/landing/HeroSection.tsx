@@ -25,18 +25,18 @@ const HeroSection = () => {
         <div className="max-w-3xl">
           <div className="flex items-center gap-2 mb-6">
             <div className="w-2 h-2 rounded-full bg-level-accent animate-pulse" />
-            <span className="text-level-muted-foreground text-sm">Special Education Software</span>
+            <span className="text-level-muted-foreground text-sm">Career Guidance Platform</span>
           </div>
 
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-            <span className="block">Your School.</span>
-            <span className="block level-gradient-text">Intelligent Management.</span>
-            <span className="block">Built for SEND.</span>
+            <span className="block">Career Guidance.</span>
+            <span className="block level-gradient-text">Made Simple.</span>
+            <span className="block">For Every Student.</span>
           </h1>
 
           <p className="text-lg md:text-xl text-level-muted-foreground mb-8 max-w-2xl">
-            AI-powered school management designed for special education. UK National Curriculum integration,
-            intelligent assessments, and progress tracking that actually works.
+            Career guidance platform built for alternative provision and specialist settings.
+            Gatsby Benchmarks, ASDAN qualifications, and progress tracking that actually works.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 mb-12">

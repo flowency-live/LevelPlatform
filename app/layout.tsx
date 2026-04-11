@@ -9,9 +9,9 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: 'Elevate | Career Guidance for SEND Education',
-  description: 'AI-powered career guidance platform for special education. Gatsby Benchmarks, ASDAN qualifications, and student progress tracking. Built by OpStack.',
-  keywords: ['special education', 'career guidance', 'SEND', 'Gatsby Benchmarks', 'ASDAN', 'student progress', 'EdTech'],
+  title: 'Level | Career Guidance for Alternative Provision',
+  description: 'Career guidance platform for alternative provision and specialist settings. Gatsby Benchmarks, ASDAN qualifications, and student progress tracking.',
+  keywords: ['alternative provision', 'career guidance', 'vulnerable children', 'Gatsby Benchmarks', 'ASDAN', 'student progress', 'EdTech'],
 }
 
 export default function RootLayout({
