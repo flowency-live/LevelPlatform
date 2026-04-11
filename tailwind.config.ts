@@ -1,6 +1,7 @@
 import type { Config } from 'tailwindcss'
 
 const config: Config = {
+  darkMode: 'class',
   content: [
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
@@ -9,86 +10,214 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Layer 1: Tenant (runtime customizable via CSS vars)
-        tenant: {
-          primary: 'var(--tenant-primary)',
-          'primary-dark': 'var(--tenant-primary-dark)',
-          secondary: 'var(--tenant-secondary)',
-          accent: 'var(--tenant-accent)',
+        /* ============================================
+           SHADCN/UI SEMANTIC COLORS
+           ============================================ */
+        background: 'hsl(var(--background))',
+        foreground: 'hsl(var(--foreground))',
+
+        card: {
+          DEFAULT: 'hsl(var(--card))',
+          foreground: 'hsl(var(--card-foreground))',
+          border: 'hsl(var(--card-border))',
         },
 
-        // Layer 2: Framework (fixed)
+        popover: {
+          DEFAULT: 'hsl(var(--popover))',
+          foreground: 'hsl(var(--popover-foreground))',
+          border: 'hsl(var(--popover-border))',
+        },
+
+        primary: {
+          DEFAULT: 'hsl(var(--primary))',
+          foreground: 'hsl(var(--primary-foreground))',
+          border: 'hsl(var(--primary-border))',
+        },
+
+        secondary: {
+          DEFAULT: 'hsl(var(--secondary))',
+          foreground: 'hsl(var(--secondary-foreground))',
+          border: 'hsl(var(--secondary-border))',
+        },
+
+        muted: {
+          DEFAULT: 'hsl(var(--muted))',
+          foreground: 'hsl(var(--muted-foreground))',
+          border: 'hsl(var(--muted-border))',
+        },
+
+        accent: {
+          DEFAULT: 'hsl(var(--accent))',
+          foreground: 'hsl(var(--accent-foreground))',
+          border: 'hsl(var(--accent-border))',
+        },
+
+        destructive: {
+          DEFAULT: 'hsl(var(--destructive))',
+          foreground: 'hsl(var(--destructive-foreground))',
+          border: 'hsl(var(--destructive-border))',
+        },
+
+        border: 'hsl(var(--border))',
+        input: 'hsl(var(--input))',
+        ring: 'hsl(var(--ring))',
+
+        /* ============================================
+           LAYER 1: TENANT (runtime customizable)
+           ============================================ */
+        tenant: {
+          primary: 'hsl(var(--tenant-primary))',
+          'primary-foreground': 'hsl(var(--tenant-primary-foreground))',
+          'primary-dark': 'hsl(var(--tenant-primary-dark))',
+          secondary: 'hsl(var(--tenant-secondary))',
+          accent: 'hsl(var(--tenant-accent))',
+        },
+
+        /* ============================================
+           LAYER 2: FRAMEWORK (fixed)
+           ============================================ */
         gatsby: {
-          DEFAULT: '#3B82F6',
-          dark: '#2563EB',
-          light: '#93C5FD',
-          bg: '#EFF6FF',
-          border: '#BFDBFE',
+          DEFAULT: 'hsl(var(--gatsby))',
+          foreground: 'hsl(var(--gatsby-foreground))',
+          dark: 'hsl(var(--gatsby-dark))',
+          light: 'hsl(var(--gatsby-light))',
+          bg: 'hsl(var(--gatsby-bg))',
+          border: 'hsl(var(--gatsby-border))',
         },
         asdan: {
-          DEFAULT: '#22C55E',
-          dark: '#16A34A',
-          light: '#86EFAC',
-          bg: '#F0FDF4',
-          border: '#BBF7D0',
+          DEFAULT: 'hsl(var(--asdan))',
+          foreground: 'hsl(var(--asdan-foreground))',
+          dark: 'hsl(var(--asdan-dark))',
+          light: 'hsl(var(--asdan-light))',
+          bg: 'hsl(var(--asdan-bg))',
+          border: 'hsl(var(--asdan-border))',
         },
         individual: {
-          DEFAULT: '#F97316',
-          dark: '#EA580C',
-          light: '#FDBA74',
-          bg: '#FFF7ED',
-          border: '#FED7AA',
+          DEFAULT: 'hsl(var(--individual))',
+          foreground: 'hsl(var(--individual-foreground))',
+          dark: 'hsl(var(--individual-dark))',
+          light: 'hsl(var(--individual-light))',
+          bg: 'hsl(var(--individual-bg))',
+          border: 'hsl(var(--individual-border))',
         },
 
-        // Layer 3: Persona
+        /* ============================================
+           LAYER 3: PERSONA
+           ============================================ */
         persona: {
-          student: '#3B82F6',
-          'student-bg': '#EFF6FF',
-          teacher: '#14B8A6',
-          'teacher-bg': '#F0FDFA',
-          management: '#64748B',
-          'management-bg': '#F8FAFC',
+          student: 'hsl(var(--persona-student))',
+          'student-bg': 'hsl(var(--persona-student-bg))',
+          teacher: 'hsl(var(--persona-teacher))',
+          'teacher-bg': 'hsl(var(--persona-teacher-bg))',
+          management: 'hsl(var(--persona-management))',
+          'management-bg': 'hsl(var(--persona-management-bg))',
         },
 
-        // Layer 4: System (using Tailwind grays + custom)
+        /* ============================================
+           LAYER 4: SYSTEM
+           ============================================ */
         surface: {
-          page: '#F9FAFB',
-          card: '#FFFFFF',
-          elevated: '#FFFFFF',
+          page: 'hsl(var(--surface-page))',
+          card: 'hsl(var(--surface-card))',
+          elevated: 'hsl(var(--surface-elevated))',
         },
-        border: {
-          DEFAULT: '#E5E7EB',
-          strong: '#D1D5DB',
-        },
+
         status: {
-          success: '#22C55E',
-          'success-bg': '#F0FDF4',
-          warning: '#F59E0B',
-          'warning-bg': '#FFFBEB',
-          error: '#EF4444',
-          'error-bg': '#FEF2F2',
-          info: '#3B82F6',
-          'info-bg': '#EFF6FF',
+          success: 'hsl(var(--status-success))',
+          'success-bg': 'hsl(var(--status-success-bg))',
+          warning: 'hsl(var(--status-warning))',
+          'warning-bg': 'hsl(var(--status-warning-bg))',
+          error: 'hsl(var(--status-error))',
+          'error-bg': 'hsl(var(--status-error-bg))',
+          info: 'hsl(var(--status-info))',
+          'info-bg': 'hsl(var(--status-info-bg))',
+        },
+
+        /* ============================================
+           LEVEL LANDING PAGE NAMESPACE
+           ============================================ */
+        level: {
+          primary: 'hsl(var(--level-primary))',
+          'primary-foreground': 'hsl(var(--level-primary-foreground))',
+          accent: 'hsl(var(--level-accent))',
+          'accent-foreground': 'hsl(var(--level-accent-foreground))',
+          muted: 'hsl(var(--level-muted))',
+          'muted-foreground': 'hsl(var(--level-muted-foreground))',
+        },
+
+        /* ============================================
+           SIDEBAR (for shadcn sidebar component)
+           ============================================ */
+        sidebar: {
+          DEFAULT: 'hsl(var(--sidebar))',
+          foreground: 'hsl(var(--sidebar-foreground))',
+          border: 'hsl(var(--sidebar-border))',
+          primary: 'hsl(var(--sidebar-primary))',
+          'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
+          accent: 'hsl(var(--sidebar-accent))',
+          'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
+          ring: 'hsl(var(--sidebar-ring))',
         },
       },
+
       fontFamily: {
-        sans: ['var(--font-source-sans)', 'Source Sans 3', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-sans)', 'Source Sans 3', 'system-ui', 'sans-serif'],
+        serif: ['var(--font-serif)', 'Georgia', 'serif'],
+        mono: ['var(--font-mono)', 'JetBrains Mono', 'ui-monospace', 'monospace'],
       },
+
       borderRadius: {
-        sm: '0.375rem',
-        DEFAULT: '0.5rem',
-        lg: '0.75rem',
-        xl: '1rem',
+        sm: 'calc(var(--radius) - 4px)',
+        DEFAULT: 'calc(var(--radius) - 2px)',
+        md: 'calc(var(--radius) - 2px)',
+        lg: 'var(--radius)',
+        xl: 'calc(var(--radius) + 4px)',
+        '2xl': 'calc(var(--radius) + 8px)',
       },
+
       boxShadow: {
-        sm: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
-        DEFAULT: '0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05)',
-        lg: '0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.05)',
-        focus: '0 0 0 3px rgba(107, 155, 138, 0.4)',
+        sm: 'var(--shadow-sm)',
+        DEFAULT: 'var(--shadow)',
+        md: 'var(--shadow-md)',
+        lg: 'var(--shadow-lg)',
+        xl: 'var(--shadow-xl)',
+        focus: 'var(--shadow-focus)',
       },
+
       spacing: {
         '18': '4.5rem',
         '22': '5.5rem',
+      },
+
+      keyframes: {
+        'fade-in': {
+          from: { opacity: '0' },
+          to: { opacity: '1' },
+        },
+        'fade-in-up': {
+          from: { opacity: '0', transform: 'translateY(10px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        },
+        'slide-in-from-bottom': {
+          from: { transform: 'translateY(100%)' },
+          to: { transform: 'translateY(0)' },
+        },
+        'slide-in-from-top': {
+          from: { transform: 'translateY(-100%)' },
+          to: { transform: 'translateY(0)' },
+        },
+        'scale-in': {
+          from: { opacity: '0', transform: 'scale(0.95)' },
+          to: { opacity: '1', transform: 'scale(1)' },
+        },
+      },
+
+      animation: {
+        'fade-in': 'fade-in var(--duration-normal) ease-out',
+        'fade-in-up': 'fade-in-up var(--duration-normal) ease-out',
+        'slide-in-from-bottom': 'slide-in-from-bottom var(--duration-normal) ease-out',
+        'slide-in-from-top': 'slide-in-from-top var(--duration-normal) ease-out',
+        'scale-in': 'scale-in var(--duration-normal) ease-out',
       },
     },
   },

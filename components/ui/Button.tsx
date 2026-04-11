@@ -10,7 +10,7 @@ const buttonVariants = cva(
       variant: {
         primary: 'bg-tenant-primary text-white hover:bg-tenant-primary-dark focus-visible:ring-tenant-primary',
         secondary: 'border border-tenant-primary text-tenant-primary bg-transparent hover:bg-tenant-accent/10 focus-visible:ring-tenant-primary',
-        ghost: 'text-gray-600 bg-transparent hover:bg-gray-100 focus-visible:ring-gray-400',
+        ghost: 'text-muted-foreground bg-transparent hover:bg-muted focus-visible:ring-muted',
       },
       size: {
         sm: 'h-9 px-4 text-sm',

@@ -17,7 +17,7 @@ function formatDate(isoString: string): string {
 const statusConfig = {
   'not-started': {
     label: 'Not Started',
-    className: 'bg-gray-100 text-gray-700',
+    className: 'bg-muted text-muted-foreground',
   },
   'in-progress': {
     label: 'In Progress',
@@ -76,7 +76,7 @@ export function SMARTTargetCard({
           aria-valuemin={0}
           aria-valuemax={100}
           aria-label={`${target.progress}% complete`}
-          className="h-2 bg-gray-200 rounded-full overflow-hidden"
+          className="h-2 bg-muted rounded-full overflow-hidden"
         >
           <div
             className={cn(

@@ -58,7 +58,7 @@ export function ActivityBlock({
             'transition-colors duration-150',
             isComplete
               ? 'bg-status-success border-status-success text-white'
-              : 'bg-white border-gray-300 hover:border-gray-400'
+              : 'bg-white border-input hover:border-muted-foreground'
           )}
         />
       </div>

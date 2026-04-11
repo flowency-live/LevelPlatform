@@ -53,9 +53,9 @@ export function TopNav({ items, activeHref, persona, userName }: TopNavProps) {
       {/* User info */}
       <div className="flex items-center gap-3">
         <span className="text-sm font-medium text-text-primary">{userName}</span>
-        <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+        <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
           <svg
-            className="w-5 h-5 text-gray-500"
+            className="w-5 h-5 text-muted-foreground"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"

@@ -21,7 +21,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       <div className="w-full">
         <label
           htmlFor={inputId}
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block text-sm font-medium text-foreground mb-1"
         >
           {label}
           {required && <span className="text-status-error ml-1">*</span>}
@@ -41,7 +41,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               error
                 ? 'border-status-error focus-visible:ring-status-error'
                 : 'border-border focus-visible:border-tenant-primary focus-visible:ring-tenant-primary/20',
-              disabled && 'bg-gray-100 cursor-not-allowed text-gray-500',
+              disabled && 'bg-muted cursor-not-allowed text-muted-foreground',
               isPassword && 'pr-12',
               className
             )}
@@ -51,7 +51,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
               aria-label="Toggle password visibility"
             >
               {showPassword ? (

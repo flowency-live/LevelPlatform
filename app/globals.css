@@ -1,85 +1,166 @@
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================
+   ELEVATE DESIGN SYSTEM - HSL Color System
+   Four Layer Architecture + shadcn/ui Patterns
+   ============================================ */
+
 :root {
   /* ============================================
-     ELEVATE DESIGN SYSTEM - Four Layer Colors
+     SHADCN/UI SEMANTIC TOKENS (HSL values)
      ============================================ */
 
-  /* Layer 1: Tenant (Arnfield Care defaults - customizable per school) */
-  --tenant-primary: #2F5D50;
-  --tenant-primary-dark: #1E3D35;
-  --tenant-secondary: #6B9B8A;
-  --tenant-accent: #A8D5C9;
+  /* Core semantic colors */
+  --background: 210 40% 98%;
+  --foreground: 222 47% 11%;
 
-  /* Layer 2: Framework (fixed - never change) */
+  --card: 0 0% 100%;
+  --card-foreground: 222 47% 11%;
+  --card-border: 214 32% 91%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 222 47% 11%;
+  --popover-border: 214 32% 91%;
+
+  --primary: 163 33% 27%;
+  --primary-foreground: 0 0% 100%;
+  --primary-border: 163 33% 22%;
+
+  --secondary: 159 23% 51%;
+  --secondary-foreground: 0 0% 100%;
+  --secondary-border: 159 23% 45%;
+
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215 16% 47%;
+  --muted-border: 214 32% 91%;
+
+  --accent: 164 36% 75%;
+  --accent-foreground: 163 33% 27%;
+  --accent-border: 164 36% 65%;
+
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --destructive-border: 0 84% 50%;
+
+  --border: 214 32% 91%;
+  --input: 214 32% 91%;
+  --ring: 163 33% 27%;
+
+  /* ============================================
+     LAYER 1: TENANT (Arnfield Care defaults)
+     Customizable per school via CSS overrides
+     ============================================ */
+  --tenant-primary: 163 33% 27%;
+  --tenant-primary-foreground: 0 0% 100%;
+  --tenant-primary-dark: 163 33% 17%;
+  --tenant-secondary: 159 23% 51%;
+  --tenant-accent: 164 36% 75%;
+
+  /* ============================================
+     LAYER 2: FRAMEWORK (fixed - never change)
+     ============================================ */
+
   /* Gatsby Benchmarks - Blue */
-  --gatsby-primary: #3B82F6;
-  --gatsby-dark: #2563EB;
-  --gatsby-light: #93C5FD;
-  --gatsby-bg: #EFF6FF;
-  --gatsby-border: #BFDBFE;
+  --gatsby: 217 91% 60%;
+  --gatsby-foreground: 0 0% 100%;
+  --gatsby-dark: 217 91% 50%;
+  --gatsby-light: 213 97% 78%;
+  --gatsby-bg: 214 100% 97%;
+  --gatsby-border: 213 97% 87%;
 
   /* ASDAN - Green */
-  --asdan-primary: #22C55E;
-  --asdan-dark: #16A34A;
-  --asdan-light: #86EFAC;
-  --asdan-bg: #F0FDF4;
-  --asdan-border: #BBF7D0;
+  --asdan: 142 71% 45%;
+  --asdan-foreground: 0 0% 100%;
+  --asdan-dark: 142 76% 36%;
+  --asdan-light: 142 77% 73%;
+  --asdan-bg: 138 76% 97%;
+  --asdan-border: 142 77% 85%;
 
   /* Individual/Self-Development - Orange */
-  --individual-primary: #F97316;
-  --individual-dark: #EA580C;
-  --individual-light: #FDBA74;
-  --individual-bg: #FFF7ED;
-  --individual-border: #FED7AA;
+  --individual: 25 95% 53%;
+  --individual-foreground: 0 0% 100%;
+  --individual-dark: 21 90% 48%;
+  --individual-light: 27 96% 72%;
+  --individual-bg: 33 100% 96%;
+  --individual-border: 27 96% 83%;
 
-  /* Layer 3: Persona (role differentiation) */
-  --persona-student: #3B82F6;
-  --persona-student-bg: #EFF6FF;
-  --persona-teacher: #14B8A6;
-  --persona-teacher-bg: #F0FDFA;
-  --persona-management: #64748B;
-  --persona-management-bg: #F8FAFC;
+  /* ============================================
+     LAYER 3: PERSONA (role differentiation)
+     ============================================ */
+  --persona-student: 217 91% 60%;
+  --persona-student-bg: 214 100% 97%;
+  --persona-teacher: 174 62% 40%;
+  --persona-teacher-bg: 166 76% 97%;
+  --persona-management: 215 16% 47%;
+  --persona-management-bg: 210 40% 98%;
 
-  /* Layer 4: System (consistent across all contexts) */
-  /* Text */
-  --text-primary: #1F2937;
-  --text-secondary: #4B5563;
-  --text-muted: #9CA3AF;
-  --text-inverse: #FFFFFF;
+  /* ============================================
+     LAYER 4: SYSTEM (consistent across all)
+     ============================================ */
 
-  /* Surfaces */
-  --surface-page: #F9FAFB;
-  --surface-card: #FFFFFF;
-  --surface-elevated: #FFFFFF;
-  --surface-overlay: rgba(0, 0, 0, 0.5);
+  /* Text (mapped to semantic) */
+  --text-primary: 222 47% 11%;
+  --text-secondary: 220 13% 37%;
+  --text-muted: 215 16% 47%;
+  --text-inverse: 0 0% 100%;
 
-  /* Borders */
-  --border-default: #E5E7EB;
-  --border-strong: #D1D5DB;
+  /* Surfaces (mapped to semantic) */
+  --surface-page: 210 40% 98%;
+  --surface-card: 0 0% 100%;
+  --surface-elevated: 0 0% 100%;
+  --surface-overlay: 0 0% 0%;
+
+  /* Borders (mapped to semantic) */
+  --border-default: 214 32% 91%;
+  --border-strong: 214 20% 84%;
 
   /* Status */
-  --status-success: #22C55E;
-  --status-success-bg: #F0FDF4;
-  --status-warning: #F59E0B;
-  --status-warning-bg: #FFFBEB;
-  --status-error: #EF4444;
-  --status-error-bg: #FEF2F2;
-  --status-info: #3B82F6;
-  --status-info-bg: #EFF6FF;
+  --status-success: 142 71% 45%;
+  --status-success-bg: 138 76% 97%;
+  --status-warning: 38 92% 50%;
+  --status-warning-bg: 48 100% 96%;
+  --status-error: 0 84% 60%;
+  --status-error-bg: 0 86% 97%;
+  --status-info: 217 91% 60%;
+  --status-info-bg: 214 100% 97%;
 
   /* Progress States */
-  --state-not-started: #9CA3AF;
-  --state-in-progress: #3B82F6;
-  --state-complete: #22C55E;
-  --state-needs-review: #F59E0B;
+  --state-not-started: 215 16% 47%;
+  --state-in-progress: 217 91% 60%;
+  --state-complete: 142 71% 45%;
+  --state-needs-review: 38 92% 50%;
+
+  /* ============================================
+     SIDEBAR (for shadcn sidebar component)
+     ============================================ */
+  --sidebar: 0 0% 100%;
+  --sidebar-foreground: 222 47% 11%;
+  --sidebar-border: 214 32% 91%;
+  --sidebar-primary: 163 33% 27%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 210 40% 96.1%;
+  --sidebar-accent-foreground: 222 47% 11%;
+  --sidebar-ring: 163 33% 27%;
+
+  /* ============================================
+     LEVEL LANDING PAGE NAMESPACE
+     ============================================ */
+  --level-primary: 163 33% 27%;
+  --level-primary-foreground: 0 0% 100%;
+  --level-accent: 217 91% 60%;
+  --level-accent-foreground: 0 0% 100%;
+  --level-muted: 210 40% 96.1%;
+  --level-muted-foreground: 215 16% 47%;
 
   /* ============================================
      TYPOGRAPHY
      ============================================ */
-  --font-primary: var(--font-source-sans), 'Source Sans 3', system-ui, -apple-system, sans-serif;
+  --font-sans: 'Source Sans 3', system-ui, -apple-system, sans-serif;
+  --font-serif: Georgia, serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
   /* ============================================
      SPACING (8px base)
@@ -95,21 +176,25 @@
   --space-12: 3rem;
 
   /* ============================================
-     BORDER RADII
+     BORDER RADII (12px base - increased)
      ============================================ */
-  --radius-sm: 0.375rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
+  --radius: 0.75rem;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
   --radius-full: 9999px;
 
   /* ============================================
      SHADOWS
      ============================================ */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.05);
-  --shadow-focus: 0 0 0 3px rgba(107, 155, 138, 0.4);
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-focus: 0 0 0 3px hsl(163 33% 27% / 0.4);
 
   /* ============================================
      TIMING
@@ -118,25 +203,108 @@
   --duration-fast: 200ms;
   --duration-normal: 300ms;
   --duration-slow: 500ms;
+
+  /* ============================================
+     ELEVATION (for layered surfaces)
+     ============================================ */
+  --elevate-1: rgba(0, 0, 0, 0.03);
+  --elevate-2: rgba(0, 0, 0, 0.08);
+  --button-outline: rgba(0, 0, 0, 0.10);
+  --badge-outline: rgba(0, 0, 0, 0.05);
 }
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+/* ============================================
+   DARK MODE
+   ============================================ */
+.dark {
+  --background: 222 47% 11%;
+  --foreground: 210 40% 98%;
+
+  --card: 222 47% 11%;
+  --card-foreground: 210 40% 98%;
+  --card-border: 217 33% 17%;
+
+  --popover: 222 47% 11%;
+  --popover-foreground: 210 40% 98%;
+  --popover-border: 217 33% 17%;
+
+  --primary: 164 36% 75%;
+  --primary-foreground: 163 33% 27%;
+  --primary-border: 164 36% 65%;
+
+  --secondary: 159 23% 51%;
+  --secondary-foreground: 0 0% 100%;
+  --secondary-border: 159 23% 45%;
+
+  --muted: 217 33% 17%;
+  --muted-foreground: 215 20% 65%;
+  --muted-border: 217 33% 25%;
+
+  --accent: 217 33% 17%;
+  --accent-foreground: 210 40% 98%;
+  --accent-border: 217 33% 25%;
+
+  --destructive: 0 63% 31%;
+  --destructive-foreground: 210 40% 98%;
+  --destructive-border: 0 63% 25%;
+
+  --border: 217 33% 17%;
+  --input: 217 33% 17%;
+  --ring: 164 36% 75%;
+
+  /* Surfaces */
+  --surface-page: 222 47% 11%;
+  --surface-card: 222 47% 11%;
+  --surface-elevated: 217 33% 17%;
+
+  /* Text */
+  --text-primary: 210 40% 98%;
+  --text-secondary: 215 20% 75%;
+  --text-muted: 215 20% 65%;
+  --text-inverse: 222 47% 11%;
+
+  /* Sidebar */
+  --sidebar: 222 47% 11%;
+  --sidebar-foreground: 210 40% 98%;
+  --sidebar-border: 217 33% 17%;
+  --sidebar-primary: 164 36% 75%;
+  --sidebar-primary-foreground: 163 33% 27%;
+  --sidebar-accent: 217 33% 17%;
+  --sidebar-accent-foreground: 210 40% 98%;
+  --sidebar-ring: 164 36% 75%;
+
+  /* Elevation */
+  --elevate-1: rgba(255, 255, 255, 0.04);
+  --elevate-2: rgba(255, 255, 255, 0.09);
+  --button-outline: rgba(255, 255, 255, 0.10);
+  --badge-outline: rgba(255, 255, 255, 0.05);
 }
 
-html {
-  scroll-behavior: smooth;
+/* ============================================
+   BASE STYLES
+   ============================================ */
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+    min-height: 100vh;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply tracking-tight font-semibold;
+  }
 }
 
-body {
-  background: var(--surface-page);
-  color: var(--text-primary);
-  font-family: var(--font-primary);
-  min-height: 100vh;
-}
-
+/* ============================================
+   COMPONENT LAYER
+   ============================================ */
 @layer components {
   .container {
     max-width: 1200px;
@@ -151,7 +319,117 @@ body {
   }
 }
 
-/* Reduced motion support */
+/* ============================================
+   UTILITIES
+   ============================================ */
+@layer utilities {
+  /* Hide ugly search cancel button in Chrome */
+  input[type="search"]::-webkit-search-cancel-button {
+    @apply hidden;
+  }
+
+  /* Placeholder styling for contentEditable div */
+  [contenteditable][data-placeholder]:empty::before {
+    content: attr(data-placeholder);
+    color: hsl(var(--muted-foreground));
+    pointer-events: none;
+  }
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-in-from-bottom {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-in-from-top {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Animation utilities */
+.animate-in {
+  animation-duration: var(--duration-normal);
+  animation-timing-function: ease-out;
+  animation-fill-mode: both;
+}
+
+.fade-in {
+  animation-name: fade-in;
+}
+
+.fade-in-up {
+  animation-name: fade-in-up;
+}
+
+.slide-in-from-bottom {
+  animation-name: slide-in-from-bottom;
+}
+
+.slide-in-from-top {
+  animation-name: slide-in-from-top;
+}
+
+.scale-in {
+  animation-name: scale-in;
+}
+
+.duration-200 {
+  animation-duration: 200ms;
+}
+
+.duration-300 {
+  animation-duration: 300ms;
+}
+
+.duration-500 {
+  animation-duration: 500ms;
+}
+
+/* ============================================
+   REDUCED MOTION SUPPORT
+   ============================================ */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

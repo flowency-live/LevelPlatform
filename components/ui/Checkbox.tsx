@@ -27,7 +27,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
             id={checkboxId}
             disabled={disabled}
             className={cn(
-              'peer h-6 w-6 shrink-0 rounded border-2 border-gray-300 appearance-none',
+              'peer h-6 w-6 shrink-0 rounded border-2 border-input appearance-none',
               'checked:bg-status-success checked:border-status-success',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-status-success',
               'disabled:cursor-not-allowed disabled:opacity-50',
@@ -41,7 +41,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
             strokeWidth={3}
           />
         </div>
-        <span className="text-base text-gray-700">{label}</span>
+        <span className="text-base text-foreground">{label}</span>
       </label>
     );
   }

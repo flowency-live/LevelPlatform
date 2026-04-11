@@ -39,7 +39,7 @@ export default function StudentDashboard() {
   const completedCount = benchmarks.filter(b => b.status === 'complete').length;
 
   return (
-    <div className="px-5 py-6 space-y-6 max-w-4xl mx-auto">
+    <div className="px-5 py-6 space-y-8 max-w-4xl mx-auto animate-in fade-in duration-500">
       {/* Hero Section - matches mockup style */}
       <section>
         <h1 className="text-[28px] font-bold text-text-primary tracking-tight leading-tight">

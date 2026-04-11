@@ -71,7 +71,7 @@ export function BottomNav({ items, activeHref, persona }: BottomNavProps) {
                   'transition-all duration-200',
                   isActive
                     ? cn(personaColors[persona], personaBgColors[persona])
-                    : 'text-text-muted hover:text-text-secondary hover:bg-gray-50'
+                    : 'text-text-muted hover:text-text-secondary hover:bg-muted'
                 )}
               >
                 <span className="relative">

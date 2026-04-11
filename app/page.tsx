@@ -94,7 +94,7 @@ export default function Home() {
   const [selectedPortal, setSelectedPortal] = useState<Persona>('student');
 
   return (
-    <div data-testid="portal-page" className="min-h-screen bg-surface-page">
+    <div data-testid="portal-page" className="min-h-screen bg-background animate-in fade-in duration-500">
       {/* Tenant Header Bar */}
       <header className="bg-tenant-primary h-2" />
 

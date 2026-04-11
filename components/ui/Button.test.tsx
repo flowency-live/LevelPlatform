@@ -32,7 +32,7 @@ describe('Button', () => {
     it('applies ghost variant styles', () => {
       render(<Button variant="ghost">Ghost</Button>);
       const button = screen.getByRole('button');
-      expect(button).toHaveClass('text-gray-600');
+      expect(button).toHaveClass('text-muted-foreground');
     });
   });
 

@@ -68,7 +68,7 @@ describe('Input', () => {
     it('has disabled styling', () => {
       render(<Input label="Email" disabled />);
       const input = screen.getByRole('textbox');
-      expect(input).toHaveClass('bg-gray-100');
+      expect(input).toHaveClass('bg-muted');
       expect(input).toHaveClass('cursor-not-allowed');
     });
   });

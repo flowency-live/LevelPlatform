@@ -52,7 +52,7 @@ describe('Landing Page', () => {
     it('applies page background surface colour', () => {
       render(<Home />);
       const container = screen.getByTestId('portal-page');
-      expect(container).toHaveClass('bg-surface-page');
+      expect(container).toHaveClass('bg-background');
     });
 
     it('portal cards are rendered as articles', () => {
