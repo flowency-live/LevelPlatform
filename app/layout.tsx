@@ -1,10 +1,10 @@
 import type { Metadata } from 'next'
-import { Source_Sans_3 } from 'next/font/google'
+import { Inter } from 'next/font/google'
 import './globals.css'
 
-const sourceSans = Source_Sans_3({
+const inter = Inter({
   subsets: ['latin'],
-  variable: '--font-source-sans',
+  variable: '--font-inter',
   display: 'swap',
 })
 
@@ -20,7 +20,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={sourceSans.variable} suppressHydrationWarning>
+    <html lang="en" className={inter.variable} suppressHydrationWarning>
       <body className="min-h-screen bg-background font-sans antialiased">
         {children}
       </body>
