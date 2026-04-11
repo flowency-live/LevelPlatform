@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm test:*)",
+      "Bash(xargs:*)",
+      "Bash(dir /s /b \"C:\\\\VSProjects\\\\Student-Career-Navigator\\\\client\")",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "WebFetch(domain:www.gatsbybenchmarks.org.uk)",
+      "WebFetch(domain:complete-careers.com)"
+    ]
+  }
+}
