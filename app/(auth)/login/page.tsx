@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
@@ -47,14 +48,19 @@ export default function LoginPage() {
     setErrors({});
 
     try {
-      // TODO: Implement actual authentication
-      // For now, simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const result = await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
+      });
 
-      // Mock successful login - would normally check role and redirect
-      router.push('/student');
+      if (result?.ok) {
+        router.push('/teacher');
+      } else {
+        setErrors({ general: 'Invalid email or password' });
+      }
     } catch {
-      setErrors({ general: 'Invalid email or password' });
+      setErrors({ general: 'An unexpected error occurred' });
     } finally {
       setIsLoading(false);
     }

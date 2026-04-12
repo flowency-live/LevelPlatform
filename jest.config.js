@@ -10,7 +10,11 @@ const config = {
         jsx: 'react-jsx',
       },
     }],
+    '^.+\\.m?js$': 'ts-jest',
   },
+  transformIgnorePatterns: [
+    'node_modules/(?!(sinon|aws-sdk-client-mock)/)',
+  ],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
   },

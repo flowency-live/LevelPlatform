@@ -1,7 +1,7 @@
 import { InMemoryBenchmarkProgressRepository } from './InMemoryBenchmarkProgressRepository';
 import { BenchmarkProgress } from './BenchmarkProgress';
 import { BenchmarkId } from './BenchmarkId';
-import { ActivityId } from './ActivityId';
+import { BenchmarkActivityId } from './BenchmarkActivityId';
 import { StudentId } from '../student/StudentId';
 
 describe('InMemoryBenchmarkProgressRepository', () => {
@@ -18,7 +18,7 @@ describe('InMemoryBenchmarkProgressRepository', () => {
       studentId: StudentId.create(overrides.studentId ?? 'STUDENT-001'),
       benchmarkId: BenchmarkId.create(overrides.benchmarkId ?? 'GB1'),
       completedActivities: (overrides.completedActivityIds ?? []).map(id => ({
-        activityId: ActivityId.create(id),
+        activityId: BenchmarkActivityId.create(id),
         completedAt: now,
       })),
       totalActivities: overrides.totalActivities ?? 9,

@@ -10,7 +10,7 @@
 export type StudentId = string & { readonly _brand: 'StudentId' };
 export type TenantId = string & { readonly _brand: 'TenantId' };
 export type LocationId = string & { readonly _brand: 'LocationId' };
-export type CohortId = string & { readonly _brand: 'CohortId' };
+export type SubdivisionId = string & { readonly _brand: 'SubdivisionId' };
 export type BenchmarkId = 'GB1' | 'GB2' | 'GB3' | 'GB4' | 'GB5' | 'GB6' | 'GB7' | 'GB8';
 export type ActivityId = string & { readonly _brand: 'ActivityId' };
 
@@ -35,8 +35,7 @@ export interface Student {
   email: string;
   tenantId: TenantId;
   locationId: LocationId;
-  cohortId: CohortId;
-  yearGroup: number;
+  subdivisionId: SubdivisionId;
   createdAt: string; // ISO 8601
   updatedAt: string; // ISO 8601
 }
@@ -105,6 +104,7 @@ export interface EmployerEncounter {
 
 export interface StudentProgress {
   student: Student;
+  displayName: string; // Anonymized: "Eagle JS" - students never see their full name
   benchmarks: BenchmarkProgress[];
   overallPercent: number;
   targets: SMARTTarget[];
@@ -113,8 +113,7 @@ export interface StudentProgress {
 
 export interface StudentSummary {
   id: StudentId;
-  name: string;
-  yearGroup: number;
+  displayName: string; // Anonymized: "Eagle JS" or full name based on tenant config
   overallPercent: number;
   benchmarkStatuses: Record<BenchmarkId, CompletionStatus>;
 }

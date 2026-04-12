@@ -25,8 +25,7 @@ export default function StudentDashboard() {
     );
   }
 
-  const { student, benchmarks, overallPercent, employerEncounters, targets } = progress;
-  const firstName = student.firstName;
+  const { displayName, benchmarks, overallPercent, employerEncounters, targets } = progress;
 
   // Find the next activity to complete
   const nextBenchmark = benchmarks.find(b => b.status !== 'complete');
@@ -43,7 +42,7 @@ export default function StudentDashboard() {
       {/* Hero Section - matches mockup style */}
       <section>
         <h1 className="text-[28px] font-bold text-text-primary tracking-tight leading-tight">
-          Hi, {firstName}
+          Hi, {displayName}
         </h1>
         <p className="text-[15px] text-text-secondary mt-1">
           Here&apos;s your career development progress so far.

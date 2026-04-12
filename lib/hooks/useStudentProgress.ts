@@ -1,16 +1,35 @@
 /**
- * Hook to fetch student progress data.
- * Initially uses mock data, can be swapped to real API later.
+ * Hook to fetch student progress data from the API.
  */
 
-import { getMockStudentProgress } from '@/lib/mock-data/students';
+import { useState, useEffect } from 'react';
 import type { StudentProgress, StudentId } from '@/lib/types/student';
 
-// For MVP, we use a hardcoded student ID
-// Later this will come from auth context
-const CURRENT_STUDENT_ID = 'STUDENT-001' as StudentId;
-
 export function useStudentProgress(studentId?: StudentId): StudentProgress | null {
-  const id = studentId ?? CURRENT_STUDENT_ID;
-  return getMockStudentProgress(id);
+  const [progress, setProgress] = useState<StudentProgress | null>(null);
+
+  useEffect(() => {
+    if (!studentId) {
+      setProgress(null);
+      return;
+    }
+
+    const fetchProgress = async () => {
+      try {
+        const response = await fetch(`/api/student/${studentId}/progress`);
+        if (response.ok) {
+          const data = await response.json();
+          setProgress(data);
+        } else {
+          setProgress(null);
+        }
+      } catch {
+        setProgress(null);
+      }
+    };
+
+    fetchProgress();
+  }, [studentId]);
+
+  return progress;
 }

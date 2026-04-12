@@ -1,11 +1,10 @@
 import { StudentId } from './StudentId';
 import { TenantId } from '../tenant/TenantId';
 import { LocationId } from '../tenant/LocationId';
-import { CohortId } from '../tenant/CohortId';
+import { SubdivisionId } from '../tenant/SubdivisionId';
+import { AccessToken } from '../auth/AccessToken';
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const MIN_YEAR_GROUP = 7;
-const MAX_YEAR_GROUP = 13;
 
 export interface StudentProps {
   id: StudentId;
@@ -14,8 +13,9 @@ export interface StudentProps {
   email: string;
   tenantId: TenantId;
   locationId: LocationId;
-  cohortId: CohortId;
-  yearGroup: number;
+  subdivisionId: SubdivisionId;
+  accessToken?: AccessToken;
+  accessTokenRevokedAt?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -39,9 +39,6 @@ export class Student {
     }
     if (!EMAIL_PATTERN.test(props.email)) {
       throw new InvalidStudentError(`Invalid email: ${props.email}`);
-    }
-    if (props.yearGroup < MIN_YEAR_GROUP || props.yearGroup > MAX_YEAR_GROUP) {
-      throw new InvalidStudentError(`yearGroup must be ${MIN_YEAR_GROUP}-${MAX_YEAR_GROUP}`);
     }
 
     return new Student(props);
@@ -75,12 +72,26 @@ export class Student {
     return this.props.locationId;
   }
 
-  get cohortId(): CohortId {
-    return this.props.cohortId;
+  get subdivisionId(): SubdivisionId {
+    return this.props.subdivisionId;
   }
 
-  get yearGroup(): number {
-    return this.props.yearGroup;
+  get initials(): string {
+    const firstInitial = this.props.firstName.charAt(0).toUpperCase();
+    const lastInitial = this.props.lastName.charAt(0).toUpperCase();
+    return `${firstInitial}${lastInitial}`;
+  }
+
+  get accessToken(): AccessToken | undefined {
+    return this.props.accessToken;
+  }
+
+  get accessTokenRevokedAt(): Date | undefined {
+    return this.props.accessTokenRevokedAt;
+  }
+
+  get hasValidAccessToken(): boolean {
+    return this.props.accessToken !== undefined && this.props.accessTokenRevokedAt === undefined;
   }
 
   get createdAt(): Date {
@@ -89,6 +100,29 @@ export class Student {
 
   get updatedAt(): Date {
     return this.props.updatedAt;
+  }
+
+  generateAccessToken(): Student {
+    return new Student({
+      ...this.props,
+      accessToken: AccessToken.generate(),
+      accessTokenRevokedAt: undefined,
+    });
+  }
+
+  regenerateAccessToken(): Student {
+    return new Student({
+      ...this.props,
+      accessToken: AccessToken.generate(),
+      accessTokenRevokedAt: undefined,
+    });
+  }
+
+  revokeAccessToken(revokedAt: Date): Student {
+    return new Student({
+      ...this.props,
+      accessTokenRevokedAt: revokedAt,
+    });
   }
 
   equals(other: Student): boolean {

@@ -1,11 +1,11 @@
 import { BenchmarkId } from './BenchmarkId';
-import { ActivityId } from './ActivityId';
+import { BenchmarkActivityId } from './BenchmarkActivityId';
 import { StudentId } from '../student/StudentId';
 
 export type CompletionStatus = 'not-started' | 'in-progress' | 'complete';
 
 export interface CompletedActivity {
-  activityId: ActivityId;
+  activityId: BenchmarkActivityId;
   completedAt: Date;
 }
 
@@ -47,7 +47,7 @@ export class BenchmarkProgress {
     return [...this.props.completedActivities];
   }
 
-  get completedActivityIds(): ActivityId[] {
+  get completedActivityIds(): BenchmarkActivityId[] {
     return this.props.completedActivities.map(ca => ca.activityId);
   }
 
@@ -76,16 +76,16 @@ export class BenchmarkProgress {
     return 'in-progress';
   }
 
-  isActivityCompleted(activityId: ActivityId): boolean {
+  isActivityCompleted(activityId: BenchmarkActivityId): boolean {
     return this.props.completedActivities.some(ca => ca.activityId.equals(activityId));
   }
 
-  getActivityCompletedAt(activityId: ActivityId): Date | null {
+  getActivityCompletedAt(activityId: BenchmarkActivityId): Date | null {
     const completed = this.props.completedActivities.find(ca => ca.activityId.equals(activityId));
     return completed?.completedAt ?? null;
   }
 
-  completeActivity(activityId: ActivityId, completedAt: Date): BenchmarkProgress {
+  completeActivity(activityId: BenchmarkActivityId, completedAt: Date): BenchmarkProgress {
     if (this.isActivityCompleted(activityId)) {
       return this;
     }

@@ -3,7 +3,8 @@ import { Student } from './Student';
 import { StudentId } from './StudentId';
 import { TenantId } from '../tenant/TenantId';
 import { LocationId } from '../tenant/LocationId';
-import { CohortId } from '../tenant/CohortId';
+import { SubdivisionId } from '../tenant/SubdivisionId';
+import { AccessToken } from '../auth/AccessToken';
 
 describe('InMemoryStudentRepository', () => {
   let repository: InMemoryStudentRepository;
@@ -16,8 +17,7 @@ describe('InMemoryStudentRepository', () => {
     email: string;
     tenantId: string;
     locationId: string;
-    cohortId: string;
-    yearGroup: number;
+    subdivisionId: string;
   }> = {}) => {
     return Student.create({
       id: StudentId.create(overrides.id ?? 'STUDENT-001'),
@@ -26,8 +26,7 @@ describe('InMemoryStudentRepository', () => {
       email: overrides.email ?? 'oliver.smith@school.uk',
       tenantId: TenantId.create(overrides.tenantId ?? 'TENANT-ARNFIELD'),
       locationId: LocationId.create(overrides.locationId ?? 'LOC-EAST'),
-      cohortId: CohortId.create(overrides.cohortId ?? 'COHORT-Y10-2025'),
-      yearGroup: overrides.yearGroup ?? 10,
+      subdivisionId: SubdivisionId.create(overrides.subdivisionId ?? 'SUB-EAGLE'),
       createdAt: now,
       updatedAt: now,
     });
@@ -64,8 +63,7 @@ describe('InMemoryStudentRepository', () => {
         email: 'oliver.smith@school.uk',
         tenantId: TenantId.create('TENANT-ARNFIELD'),
         locationId: LocationId.create('LOC-EAST'),
-        cohortId: CohortId.create('COHORT-Y10-2025'),
-        yearGroup: 10,
+        subdivisionId: SubdivisionId.create('SUB-EAGLE'),
         createdAt: now,
         updatedAt: now,
       });
@@ -112,28 +110,6 @@ describe('InMemoryStudentRepository', () => {
     });
   });
 
-  describe('findByCohortId', () => {
-    it('returns students for cohort', async () => {
-      const student1 = createStudent({ id: 'STUDENT-001', cohortId: 'COHORT-A' });
-      const student2 = createStudent({ id: 'STUDENT-002', cohortId: 'COHORT-A', email: 's2@school.uk' });
-      const student3 = createStudent({ id: 'STUDENT-003', cohortId: 'COHORT-B', email: 's3@school.uk' });
-
-      await repository.save(student1);
-      await repository.save(student2);
-      await repository.save(student3);
-
-      const found = await repository.findByCohortId(CohortId.create('COHORT-A'));
-
-      expect(found).toHaveLength(2);
-    });
-
-    it('returns empty array when no students for cohort', async () => {
-      const found = await repository.findByCohortId(CohortId.create('COHORT-EMPTY'));
-
-      expect(found).toEqual([]);
-    });
-  });
-
   describe('findByLocationId', () => {
     it('returns students for location', async () => {
       const student1 = createStudent({ id: 'STUDENT-001', locationId: 'LOC-NORTH' });
@@ -153,6 +129,35 @@ describe('InMemoryStudentRepository', () => {
       const found = await repository.findByLocationId(LocationId.create('LOC-EMPTY'));
 
       expect(found).toEqual([]);
+    });
+  });
+
+  describe('findByAccessToken', () => {
+    it('finds student by access token', async () => {
+      const student = createStudent().generateAccessToken();
+      await repository.save(student);
+
+      const found = await repository.findByAccessToken(student.accessToken!);
+
+      expect(found).not.toBeNull();
+      expect(found!.id.equals(student.id)).toBe(true);
+    });
+
+    it('returns null for non-existent token', async () => {
+      const token = AccessToken.generate();
+      const found = await repository.findByAccessToken(token);
+
+      expect(found).toBeNull();
+    });
+
+    it('returns null when student has no token', async () => {
+      const student = createStudent(); // No token
+      await repository.save(student);
+
+      const token = AccessToken.generate();
+      const found = await repository.findByAccessToken(token);
+
+      expect(found).toBeNull();
     });
   });
 });

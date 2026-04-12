@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { StudentId } from '@/lib/domain/student/StudentId';
 import { GetStudentProgress } from '@/lib/application/GetStudentProgress';
-import { studentRepository, progressRepository } from '@/lib/infrastructure/seeded-repositories';
+import { studentRepository, progressRepository } from '@/lib/infrastructure/repositories';
 
 const getStudentProgress = new GetStudentProgress(studentRepository, progressRepository);
 
@@ -27,7 +27,6 @@ export async function GET(
         lastName: result.student.lastName,
         fullName: result.student.fullName,
         email: result.student.email,
-        yearGroup: result.student.yearGroup,
       },
       benchmarkProgress: result.benchmarkProgress.map(p => ({
         benchmarkId: p.benchmarkId.toString(),

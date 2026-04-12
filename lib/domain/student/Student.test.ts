@@ -2,7 +2,8 @@ import { Student } from './Student';
 import { StudentId } from './StudentId';
 import { TenantId } from '../tenant/TenantId';
 import { LocationId } from '../tenant/LocationId';
-import { CohortId } from '../tenant/CohortId';
+import { SubdivisionId } from '../tenant/SubdivisionId';
+import { AccessToken } from '../auth/AccessToken';
 
 describe('Student', () => {
   const now = new Date('2026-03-29T10:00:00Z');
@@ -14,8 +15,7 @@ describe('Student', () => {
     email: 'oliver.smith@school.uk',
     tenantId: TenantId.create('TENANT-ARNFIELD'),
     locationId: LocationId.create('LOC-EAST'),
-    cohortId: CohortId.create('COHORT-Y10-2025'),
-    yearGroup: 10,
+    subdivisionId: SubdivisionId.create('SUB-EAGLE'),
     createdAt: now,
     updatedAt: now,
   };
@@ -28,7 +28,7 @@ describe('Student', () => {
       expect(student.firstName).toBe('Oliver');
       expect(student.lastName).toBe('Smith');
       expect(student.email).toBe('oliver.smith@school.uk');
-      expect(student.yearGroup).toBe(10);
+      expect(student.subdivisionId.toString()).toBe('SUB-EAGLE');
     });
 
     it('throws for empty firstName', () => {
@@ -42,17 +42,28 @@ describe('Student', () => {
     it('throws for invalid email', () => {
       expect(() => Student.create({ ...validProps, email: 'not-an-email' })).toThrow();
     });
-
-    it('throws for invalid yearGroup', () => {
-      expect(() => Student.create({ ...validProps, yearGroup: 0 })).toThrow();
-      expect(() => Student.create({ ...validProps, yearGroup: 14 })).toThrow();
-    });
   });
 
   describe('fullName', () => {
     it('returns full name', () => {
       const student = Student.create(validProps);
       expect(student.fullName).toBe('Oliver Smith');
+    });
+  });
+
+  describe('initials', () => {
+    it('returns initials from first and last name', () => {
+      const student = Student.create(validProps);
+      expect(student.initials).toBe('OS');
+    });
+
+    it('handles lowercase names', () => {
+      const student = Student.create({
+        ...validProps,
+        firstName: 'jane',
+        lastName: 'doe',
+      });
+      expect(student.initials).toBe('JD');
     });
   });
 
@@ -70,6 +81,64 @@ describe('Student', () => {
         id: StudentId.create('STUDENT-002'),
       });
       expect(student1.equals(student2)).toBe(false);
+    });
+  });
+
+  describe('accessToken', () => {
+    it('creates student without access token by default', () => {
+      const student = Student.create(validProps);
+      expect(student.accessToken).toBeUndefined();
+    });
+
+    it('creates student with access token', () => {
+      const token = AccessToken.generate();
+      const student = Student.create({
+        ...validProps,
+        accessToken: token,
+      });
+      expect(student.accessToken?.toString()).toBe(token.toString());
+    });
+
+    it('generates new access token', () => {
+      const student = Student.create(validProps);
+      const withToken = student.generateAccessToken();
+
+      expect(withToken.accessToken).toBeDefined();
+      expect(withToken.accessToken?.toString()).toHaveLength(24);
+      expect(student.accessToken).toBeUndefined(); // Immutability
+    });
+
+    it('regenerates different access token', () => {
+      const student = Student.create(validProps).generateAccessToken();
+      const regenerated = student.regenerateAccessToken();
+
+      expect(regenerated.accessToken).toBeDefined();
+      expect(regenerated.accessToken?.toString()).not.toBe(student.accessToken?.toString());
+    });
+
+    it('revokes access token', () => {
+      const revokedAt = new Date('2026-04-12T10:00:00Z');
+      const student = Student.create(validProps).generateAccessToken();
+      const revoked = student.revokeAccessToken(revokedAt);
+
+      expect(revoked.accessTokenRevokedAt).toEqual(revokedAt);
+      expect(student.accessTokenRevokedAt).toBeUndefined(); // Immutability
+    });
+
+    it('hasValidAccessToken returns false when no token', () => {
+      const student = Student.create(validProps);
+      expect(student.hasValidAccessToken).toBe(false);
+    });
+
+    it('hasValidAccessToken returns true when token exists and not revoked', () => {
+      const student = Student.create(validProps).generateAccessToken();
+      expect(student.hasValidAccessToken).toBe(true);
+    });
+
+    it('hasValidAccessToken returns false when token is revoked', () => {
+      const revokedAt = new Date('2026-04-12T10:00:00Z');
+      const student = Student.create(validProps).generateAccessToken().revokeAccessToken(revokedAt);
+      expect(student.hasValidAccessToken).toBe(false);
     });
   });
 });

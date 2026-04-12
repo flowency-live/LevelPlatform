@@ -5,10 +5,10 @@ import { Student } from '../domain/student/Student';
 import { StudentId } from '../domain/student/StudentId';
 import { BenchmarkProgress } from '../domain/benchmark/BenchmarkProgress';
 import { BenchmarkId } from '../domain/benchmark/BenchmarkId';
-import { ActivityId } from '../domain/benchmark/ActivityId';
+import { BenchmarkActivityId } from '../domain/benchmark/BenchmarkActivityId';
 import { TenantId } from '../domain/tenant/TenantId';
 import { LocationId } from '../domain/tenant/LocationId';
-import { CohortId } from '../domain/tenant/CohortId';
+import { SubdivisionId } from '../domain/tenant/SubdivisionId';
 
 describe('CompleteActivity', () => {
   let studentRepository: InMemoryStudentRepository;
@@ -26,8 +26,7 @@ describe('CompleteActivity', () => {
       email: `${id.toLowerCase()}@school.uk`,
       tenantId: TenantId.create('TENANT-ARNFIELD'),
       locationId: LocationId.create('LOC-EAST'),
-      cohortId: CohortId.create('COHORT-Y10-2025'),
-      yearGroup: 10,
+      subdivisionId: SubdivisionId.create('SUB-EAGLE'),
       createdAt: now,
       updatedAt: now,
     });
@@ -37,7 +36,7 @@ describe('CompleteActivity', () => {
     const completedActivities = [];
     for (let i = 1; i <= completedCount; i++) {
       completedActivities.push({
-        activityId: ActivityId.create(`${benchmarkId}-0${i}`),
+        activityId: BenchmarkActivityId.create(`${benchmarkId}-0${i}`),
         completedAt: now,
       });
     }
@@ -69,13 +68,13 @@ describe('CompleteActivity', () => {
       const result = await useCase.execute({
         studentId: StudentId.create('STUDENT-001'),
         benchmarkId: BenchmarkId.create('GB1'),
-        activityId: ActivityId.create('GB1-01'),
+        activityId: BenchmarkActivityId.create('GB1-01'),
         completedAt: later,
       });
 
       expect(result.completedActivities).toHaveLength(1);
-      expect(result.isActivityCompleted(ActivityId.create('GB1-01'))).toBe(true);
-      expect(result.getActivityCompletedAt(ActivityId.create('GB1-01'))).toEqual(later);
+      expect(result.isActivityCompleted(BenchmarkActivityId.create('GB1-01'))).toBe(true);
+      expect(result.getActivityCompletedAt(BenchmarkActivityId.create('GB1-01'))).toEqual(later);
     });
 
     it('persists the updated progress', async () => {
@@ -88,7 +87,7 @@ describe('CompleteActivity', () => {
       await useCase.execute({
         studentId: StudentId.create('STUDENT-001'),
         benchmarkId: BenchmarkId.create('GB1'),
-        activityId: ActivityId.create('GB1-01'),
+        activityId: BenchmarkActivityId.create('GB1-01'),
         completedAt: later,
       });
 
@@ -106,7 +105,7 @@ describe('CompleteActivity', () => {
         useCase.execute({
           studentId: StudentId.create('STUDENT-NOTFOUND'),
           benchmarkId: BenchmarkId.create('GB1'),
-          activityId: ActivityId.create('GB1-01'),
+          activityId: BenchmarkActivityId.create('GB1-01'),
           completedAt: later,
         })
       ).rejects.toThrow('Student not found');
@@ -119,7 +118,7 @@ describe('CompleteActivity', () => {
       const result = await useCase.execute({
         studentId: StudentId.create('STUDENT-001'),
         benchmarkId: BenchmarkId.create('GB1'),
-        activityId: ActivityId.create('GB1-01'),
+        activityId: BenchmarkActivityId.create('GB1-01'),
         completedAt: later,
       });
 
@@ -137,12 +136,12 @@ describe('CompleteActivity', () => {
       const result = await useCase.execute({
         studentId: StudentId.create('STUDENT-001'),
         benchmarkId: BenchmarkId.create('GB1'),
-        activityId: ActivityId.create('GB1-01'), // Same activity
+        activityId: BenchmarkActivityId.create('GB1-01'), // Same activity
         completedAt: later,
       });
 
       expect(result.completedActivities).toHaveLength(1);
-      expect(result.getActivityCompletedAt(ActivityId.create('GB1-01'))).toEqual(now); // Original time preserved
+      expect(result.getActivityCompletedAt(BenchmarkActivityId.create('GB1-01'))).toEqual(now); // Original time preserved
     });
 
     it('updates percentComplete correctly', async () => {
@@ -155,7 +154,7 @@ describe('CompleteActivity', () => {
       const result = await useCase.execute({
         studentId: StudentId.create('STUDENT-001'),
         benchmarkId: BenchmarkId.create('GB1'),
-        activityId: ActivityId.create('GB1-05'), // 5th activity
+        activityId: BenchmarkActivityId.create('GB1-05'), // 5th activity
         completedAt: later,
       });
 

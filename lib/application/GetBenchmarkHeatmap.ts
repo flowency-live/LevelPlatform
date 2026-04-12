@@ -4,7 +4,7 @@ import { StudentRepository } from '../domain/student/StudentRepository';
 import { BenchmarkProgress, CompletionStatus } from '../domain/benchmark/BenchmarkProgress';
 import { BenchmarkId } from '../domain/benchmark/BenchmarkId';
 import { BenchmarkProgressRepository } from '../domain/benchmark/BenchmarkProgressRepository';
-import { CohortId } from '../domain/tenant/CohortId';
+import { LocationId } from '../domain/tenant/LocationId';
 
 const ALL_BENCHMARK_IDS = ['GB1', 'GB2', 'GB3', 'GB4', 'GB5', 'GB6', 'GB7', 'GB8'];
 
@@ -37,8 +37,8 @@ export class GetBenchmarkHeatmap {
     private readonly progressRepository: BenchmarkProgressRepository
   ) {}
 
-  async execute(cohortId: CohortId): Promise<HeatmapResult> {
-    const students = await this.studentRepository.findByCohortId(cohortId);
+  async execute(locationId: LocationId): Promise<HeatmapResult> {
+    const students = await this.studentRepository.findByLocationId(locationId);
 
     const rows = await Promise.all(
       students.map(student => this.buildHeatmapRow(student))

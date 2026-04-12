@@ -2,9 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { StudentId } from '@/lib/domain/student/StudentId';
 import { BenchmarkId } from '@/lib/domain/benchmark/BenchmarkId';
-import { ActivityId } from '@/lib/domain/benchmark/ActivityId';
+import { BenchmarkActivityId } from '@/lib/domain/benchmark/BenchmarkActivityId';
 import { CompleteActivity } from '@/lib/application/CompleteActivity';
-import { studentRepository, progressRepository } from '@/lib/infrastructure/seeded-repositories';
+import { studentRepository, progressRepository } from '@/lib/infrastructure/repositories';
 
 const completeActivity = new CompleteActivity(studentRepository, progressRepository);
 
@@ -31,7 +31,7 @@ export async function POST(
     const result = await completeActivity.execute({
       studentId: StudentId.create(params.id),
       benchmarkId: BenchmarkId.create(validated.benchmarkId),
-      activityId: ActivityId.create(validated.activityId),
+      activityId: BenchmarkActivityId.create(validated.activityId),
       completedAt: new Date(),
     });
 

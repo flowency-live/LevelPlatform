@@ -1,6 +1,6 @@
 import { BenchmarkProgress, CompletionStatus, CompletedActivity } from './BenchmarkProgress';
 import { BenchmarkId } from './BenchmarkId';
-import { ActivityId } from './ActivityId';
+import { BenchmarkActivityId } from './BenchmarkActivityId';
 import { StudentId } from '../student/StudentId';
 
 describe('BenchmarkProgress', () => {
@@ -33,8 +33,8 @@ describe('BenchmarkProgress', () => {
         studentId,
         benchmarkId,
         completedActivities: [
-          { activityId: ActivityId.create('GB1-01'), completedAt: now },
-          { activityId: ActivityId.create('GB1-02'), completedAt: now },
+          { activityId: BenchmarkActivityId.create('GB1-01'), completedAt: now },
+          { activityId: BenchmarkActivityId.create('GB1-02'), completedAt: now },
         ],
         totalActivities: 5,
         createdAt: now,
@@ -50,9 +50,9 @@ describe('BenchmarkProgress', () => {
         studentId,
         benchmarkId,
         completedActivities: [
-          { activityId: ActivityId.create('GB1-01'), completedAt: now },
-          { activityId: ActivityId.create('GB1-02'), completedAt: now },
-          { activityId: ActivityId.create('GB1-03'), completedAt: now },
+          { activityId: BenchmarkActivityId.create('GB1-01'), completedAt: now },
+          { activityId: BenchmarkActivityId.create('GB1-02'), completedAt: now },
+          { activityId: BenchmarkActivityId.create('GB1-03'), completedAt: now },
         ],
         totalActivities: 3,
         createdAt: now,
@@ -88,7 +88,7 @@ describe('BenchmarkProgress', () => {
         updatedAt: now,
       });
 
-      const updated = progress.completeActivity(ActivityId.create('GB1-01'), later);
+      const updated = progress.completeActivity(BenchmarkActivityId.create('GB1-01'), later);
 
       expect(updated.completedActivities).toHaveLength(1);
       expect(updated.completedActivities[0].completedAt).toEqual(later);
@@ -97,7 +97,7 @@ describe('BenchmarkProgress', () => {
     });
 
     it('does not duplicate already completed activity', () => {
-      const activityId = ActivityId.create('GB1-01');
+      const activityId = BenchmarkActivityId.create('GB1-01');
       const progress = BenchmarkProgress.create({
         studentId,
         benchmarkId,
@@ -123,7 +123,7 @@ describe('BenchmarkProgress', () => {
         updatedAt: now,
       });
 
-      const updated = progress.completeActivity(ActivityId.create('GB1-01'), later);
+      const updated = progress.completeActivity(BenchmarkActivityId.create('GB1-01'), later);
 
       expect(updated.createdAt).toEqual(now);
     });
@@ -131,7 +131,7 @@ describe('BenchmarkProgress', () => {
 
   describe('isActivityCompleted', () => {
     it('returns true for completed activity', () => {
-      const activityId = ActivityId.create('GB1-01');
+      const activityId = BenchmarkActivityId.create('GB1-01');
       const progress = BenchmarkProgress.create({
         studentId,
         benchmarkId,
@@ -154,13 +154,13 @@ describe('BenchmarkProgress', () => {
         updatedAt: now,
       });
 
-      expect(progress.isActivityCompleted(ActivityId.create('GB1-01'))).toBe(false);
+      expect(progress.isActivityCompleted(BenchmarkActivityId.create('GB1-01'))).toBe(false);
     });
   });
 
   describe('getActivityCompletedAt', () => {
     it('returns completion date for completed activity', () => {
-      const activityId = ActivityId.create('GB1-01');
+      const activityId = BenchmarkActivityId.create('GB1-01');
       const progress = BenchmarkProgress.create({
         studentId,
         benchmarkId,
@@ -183,7 +183,7 @@ describe('BenchmarkProgress', () => {
         updatedAt: now,
       });
 
-      expect(progress.getActivityCompletedAt(ActivityId.create('GB1-01'))).toBeNull();
+      expect(progress.getActivityCompletedAt(BenchmarkActivityId.create('GB1-01'))).toBeNull();
     });
   });
 
@@ -193,8 +193,8 @@ describe('BenchmarkProgress', () => {
         studentId,
         benchmarkId,
         completedActivities: [
-          { activityId: ActivityId.create('GB1-01'), completedAt: now },
-          { activityId: ActivityId.create('GB1-02'), completedAt: now },
+          { activityId: BenchmarkActivityId.create('GB1-01'), completedAt: now },
+          { activityId: BenchmarkActivityId.create('GB1-02'), completedAt: now },
         ],
         totalActivities: 5,
         createdAt: now,
@@ -203,8 +203,8 @@ describe('BenchmarkProgress', () => {
 
       const ids = progress.completedActivityIds;
       expect(ids).toHaveLength(2);
-      expect(ids[0].equals(ActivityId.create('GB1-01'))).toBe(true);
-      expect(ids[1].equals(ActivityId.create('GB1-02'))).toBe(true);
+      expect(ids[0].equals(BenchmarkActivityId.create('GB1-01'))).toBe(true);
+      expect(ids[1].equals(BenchmarkActivityId.create('GB1-02'))).toBe(true);
     });
   });
 });

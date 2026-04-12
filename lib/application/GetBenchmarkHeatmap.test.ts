@@ -5,10 +5,10 @@ import { Student } from '../domain/student/Student';
 import { StudentId } from '../domain/student/StudentId';
 import { BenchmarkProgress } from '../domain/benchmark/BenchmarkProgress';
 import { BenchmarkId } from '../domain/benchmark/BenchmarkId';
-import { ActivityId } from '../domain/benchmark/ActivityId';
+import { BenchmarkActivityId } from '../domain/benchmark/BenchmarkActivityId';
 import { TenantId } from '../domain/tenant/TenantId';
 import { LocationId } from '../domain/tenant/LocationId';
-import { CohortId } from '../domain/tenant/CohortId';
+import { SubdivisionId } from '../domain/tenant/SubdivisionId';
 
 describe('GetBenchmarkHeatmap', () => {
   let studentRepository: InMemoryStudentRepository;
@@ -17,16 +17,15 @@ describe('GetBenchmarkHeatmap', () => {
 
   const now = new Date('2026-03-29T10:00:00Z');
 
-  const createStudent = (id: string, cohortId: string = 'COHORT-Y10-2025') => {
+  const createStudent = (id: string, locationId: string = 'LOC-EAST') => {
     return Student.create({
       id: StudentId.create(id),
       firstName: `Student${id.slice(-3)}`,
       lastName: 'Test',
       email: `${id.toLowerCase()}@school.uk`,
       tenantId: TenantId.create('TENANT-ARNFIELD'),
-      locationId: LocationId.create('LOC-EAST'),
-      cohortId: CohortId.create(cohortId),
-      yearGroup: 10,
+      locationId: LocationId.create(locationId),
+      subdivisionId: SubdivisionId.create('SUB-EAGLE'),
       createdAt: now,
       updatedAt: now,
     });
@@ -36,7 +35,7 @@ describe('GetBenchmarkHeatmap', () => {
     const completedActivities = [];
     for (let i = 1; i <= completedCount; i++) {
       completedActivities.push({
-        activityId: ActivityId.create(`${benchmarkId}-0${i}`),
+        activityId: BenchmarkActivityId.create(`${benchmarkId}-0${i}`),
         completedAt: now,
       });
     }
@@ -58,7 +57,7 @@ describe('GetBenchmarkHeatmap', () => {
   });
 
   describe('execute', () => {
-    it('returns heatmap data for all students in cohort', async () => {
+    it('returns heatmap data for all students at location', async () => {
       const student1 = createStudent('STUDENT-001');
       const student2 = createStudent('STUDENT-002');
       const progress1 = createProgress('STUDENT-001', 'GB1', 9); // 100%
@@ -69,7 +68,7 @@ describe('GetBenchmarkHeatmap', () => {
       await progressRepository.save(progress1);
       await progressRepository.save(progress2);
 
-      const result = await useCase.execute(CohortId.create('COHORT-Y10-2025'));
+      const result = await useCase.execute(LocationId.create('LOC-EAST'));
 
       expect(result.rows).toHaveLength(2);
       expect(result.rows[0].studentId.equals(StudentId.create('STUDENT-001'))).toBe(true);
@@ -83,7 +82,7 @@ describe('GetBenchmarkHeatmap', () => {
       await studentRepository.save(student);
       await progressRepository.save(progress);
 
-      const result = await useCase.execute(CohortId.create('COHORT-Y10-2025'));
+      const result = await useCase.execute(LocationId.create('LOC-EAST'));
 
       const gb1Cell = result.rows[0].benchmarks.find(
         b => b.benchmarkId.equals(BenchmarkId.create('GB1'))
@@ -96,7 +95,7 @@ describe('GetBenchmarkHeatmap', () => {
       const student = createStudent('STUDENT-001');
       await studentRepository.save(student);
 
-      const result = await useCase.execute(CohortId.create('COHORT-Y10-2025'));
+      const result = await useCase.execute(LocationId.create('LOC-EAST'));
 
       const gb1Cell = result.rows[0].benchmarks.find(
         b => b.benchmarkId.equals(BenchmarkId.create('GB1'))
@@ -105,14 +104,14 @@ describe('GetBenchmarkHeatmap', () => {
       expect(gb1Cell?.status).toBe('not-started');
     });
 
-    it('filters students by cohort', async () => {
-      const student1 = createStudent('STUDENT-001', 'COHORT-Y10-2025');
-      const student2 = createStudent('STUDENT-002', 'COHORT-Y11-2025');
+    it('filters students by location', async () => {
+      const student1 = createStudent('STUDENT-001', 'LOC-EAST');
+      const student2 = createStudent('STUDENT-002', 'LOC-WEST');
 
       await studentRepository.save(student1);
       await studentRepository.save(student2);
 
-      const result = await useCase.execute(CohortId.create('COHORT-Y10-2025'));
+      const result = await useCase.execute(LocationId.create('LOC-EAST'));
 
       expect(result.rows).toHaveLength(1);
       expect(result.rows[0].studentId.equals(StudentId.create('STUDENT-001'))).toBe(true);
@@ -122,7 +121,7 @@ describe('GetBenchmarkHeatmap', () => {
       const student = createStudent('STUDENT-001');
       await studentRepository.save(student);
 
-      const result = await useCase.execute(CohortId.create('COHORT-Y10-2025'));
+      const result = await useCase.execute(LocationId.create('LOC-EAST'));
 
       expect(result.rows[0].benchmarks).toHaveLength(8);
       expect(result.rows[0].benchmarks.map(b => b.benchmarkId.toString())).toEqual([
@@ -130,13 +129,13 @@ describe('GetBenchmarkHeatmap', () => {
       ]);
     });
 
-    it('returns empty rows for cohort with no students', async () => {
-      const result = await useCase.execute(CohortId.create('COHORT-EMPTY'));
+    it('returns empty rows for location with no students', async () => {
+      const result = await useCase.execute(LocationId.create('LOC-EMPTY'));
 
       expect(result.rows).toHaveLength(0);
     });
 
-    it('calculates cohort summary statistics', async () => {
+    it('calculates location summary statistics', async () => {
       const student1 = createStudent('STUDENT-001');
       const student2 = createStudent('STUDENT-002');
       const progress1 = createProgress('STUDENT-001', 'GB1', 9); // 100%
@@ -147,7 +146,7 @@ describe('GetBenchmarkHeatmap', () => {
       await progressRepository.save(progress1);
       await progressRepository.save(progress2);
 
-      const result = await useCase.execute(CohortId.create('COHORT-Y10-2025'));
+      const result = await useCase.execute(LocationId.create('LOC-EAST'));
 
       expect(result.summary.totalStudents).toBe(2);
       expect(result.summary.averageOverallProgress).toBe(10); // (100+56)/2/8 benchmarks = ~10%

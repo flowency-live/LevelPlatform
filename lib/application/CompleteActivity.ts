@@ -2,7 +2,7 @@ import { StudentId } from '../domain/student/StudentId';
 import { StudentRepository } from '../domain/student/StudentRepository';
 import { BenchmarkProgress } from '../domain/benchmark/BenchmarkProgress';
 import { BenchmarkId } from '../domain/benchmark/BenchmarkId';
-import { ActivityId } from '../domain/benchmark/ActivityId';
+import { BenchmarkActivityId } from '../domain/benchmark/BenchmarkActivityId';
 import { BenchmarkProgressRepository } from '../domain/benchmark/BenchmarkProgressRepository';
 
 export class StudentNotFoundError extends Error {
@@ -15,7 +15,7 @@ export class StudentNotFoundError extends Error {
 export interface CompleteActivityRequest {
   studentId: StudentId;
   benchmarkId: BenchmarkId;
-  activityId: ActivityId;
+  activityId: BenchmarkActivityId;
   completedAt: Date;
 }
 

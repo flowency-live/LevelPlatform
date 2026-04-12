@@ -1,564 +1,435 @@
 # Level Platform: Implementation Plan v3
 
-## Architecture Principles
+## CURRENT STATUS: Ready for Production Deployment
 
-This implementation follows the principles defined in `CLAUDE.md`:
-
-| Principle | Application |
-|-----------|-------------|
-| **TDD** | Tests written BEFORE implementation. Every feature starts with a failing test. |
-| **DDD** | Domain-driven design with bounded contexts, value objects, aggregates. |
-| **Hexagonal** | Domain core has no infrastructure dependencies. Ports and adapters pattern. |
-| **Clean Code** | Single responsibility, early returns, no comments (self-documenting). |
-| **DRY** | No duplication. Extract when pattern repeats. |
-| **Immutability** | No mutations. Return new objects. |
-| **Type Safety** | No `any`, no `as` assertions, Zod validation at boundaries. |
-
----
-
-## Current State
-
-| Component | Status | Notes |
+| Component | Status | Tests |
 |-----------|--------|-------|
-| Design System | Complete | HSL colors, Inter font, animations |
-| Student Domain | Complete | StudentId, BenchmarkProgress |
-| Benchmark Domain | Complete | BenchmarkId, ActivityId |
-| Tenant Domain | Complete | TenantId, LocationId, CohortId |
-| Student Portal UI | 80% | Dashboard done, needs refactor to hide Gatsby |
-| Teacher Portal | Not started | - |
-| Management Portal | Not started | - |
-| Tests | 383 passing | Good coverage |
+| Domain Layer | Complete | 849+ |
+| Authentication Infrastructure | Complete | 99 |
+| Student Portal UI | 80% | 73+ |
+| **Teacher Portal UI** | **Complete** | **107** |
+| **Total Tests Passing** | **1128** | |
 
 ---
 
-## Bounded Contexts
+## Deployment Blockers (Must Fix Before Live)
+
+| Blocker | Description | Owner |
+|---------|-------------|-------|
+| DynamoDB Connection | Repositories use InMemory, need DynamoDB adapters | Agent 1 |
+| CDK Deploy | Stacks exist but not deployed | Agent 1 |
+| Environment Variables | Need NEXTAUTH_SECRET, AWS credentials | Agent 1 |
+| First Staff Invite | No staff exist, need CLI to create first user | Agent 1 |
+
+---
+
+## Dual-Agent Deployment Plan
+
+### Agent 1: Infrastructure & Deployment Track
+
+**Goal:** Get the app deployed and connected to real databases.
+
+#### Phase A: CDK Deployment (P0)
+
+**Status:** CDK stacks exist but need deployment
+
+| Task | Location | Notes |
+|------|----------|-------|
+| Deploy SharedStack | `infrastructure/lib/shared-stack.ts` | DynamoDB + S3 |
+| Deploy CICDStack | `infrastructure/lib/cicd-stack.ts` | GitHub OIDC role |
+| Verify DynamoDB table created | AWS Console | Table: `elevate-{stage}` |
+| Verify S3 bucket created | AWS Console | Evidence storage |
+
+**CDK Stack Details:**
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│ STAFF CONTEXT                                                    │
-│ StaffMember, Role, Permission                                    │
-│ "Who can do what"                                                │
-└─────────────────────────────────────────────────────────────────┘
+SharedStack (shared-stack.ts):
+├─ DynamoDB Table: elevate-{stage}
+│   ├─ PK (string) - partition key
+│   ├─ SK (string) - sort key
+│   ├─ GSI1 (GSI1PK, GSI1SK)
+│   ├─ GSI2 (GSI2PK, GSI2SK)
+│   └─ GSI3 (GSI3PK, GSI3SK)
+└─ S3 Bucket: elevate-evidence-{stage}
+    └─ CORS enabled for uploads
 
-┌─────────────────────────────────────────────────────────────────┐
-│ ACTIVITY CONTEXT                                                 │
-│ SchoolActivity, EvidenceSubmission, EvidenceReview               │
-│ "What students do and how it's tracked"                          │
-└─────────────────────────────────────────────────────────────────┘
-
-┌─────────────────────────────────────────────────────────────────┐
-│ GATSBY COMPLIANCE CONTEXT                                        │
-│ GatsbyBenchmark, BenchmarkCriteria, ComplianceStatus             │
-│ "School's statutory compliance tracking"                         │
-└─────────────────────────────────────────────────────────────────┘
-
-┌─────────────────────────────────────────────────────────────────┐
-│ ASDAN QUALIFICATION CONTEXT                                      │
-│ ASDANUnit, ASDANQualification, ASDANProgress                     │
-│ "Student's qualification tracking"                               │
-└─────────────────────────────────────────────────────────────────┘
-
-┌─────────────────────────────────────────────────────────────────┐
-│ STUDENT CAREER PLAN CONTEXT (existing, to be updated)            │
-│ Student, CareerPlan, Progress                                    │
-│ "What the student sees"                                          │
-└─────────────────────────────────────────────────────────────────┘
+CICDStack (cicd-stack.ts):
+└─ GitHub OIDC Role
+    └─ IAM policies for CF, S3, DynamoDB, Lambda
 ```
 
----
+**Commands:**
+```bash
+cd infrastructure
+npm run cdk bootstrap
+npm run cdk deploy SharedStack --context stage=dev
+npm run cdk deploy CICDStack --context stage=dev
+```
 
-## Phase 1: Staff Domain
+#### Phase B: DynamoDB Repository Adapters (P0)
 
-Build the foundation for permissions and roles.
+| Task | Interface | Location |
+|------|-----------|----------|
+| DynamoDBUserAccountRepository | `UserAccountRepository` | `lib/infrastructure/dynamodb/` |
+| DynamoDBStaffRepository | `StaffRepository` | `lib/infrastructure/dynamodb/` |
+| DynamoDBStudentRepository | `StudentRepository` | `lib/infrastructure/dynamodb/` |
+| DynamoDBBenchmarkProgressRepository | `BenchmarkProgressRepository` | `lib/infrastructure/dynamodb/` |
 
-### 1.1 Value Objects
+**Single-Table Design:**
 
-| File | Test First | Implementation |
-|------|------------|----------------|
-| `lib/domain/staff/StaffId.ts` | `StaffId.test.ts` | Format: `STAFF-{uuid}` |
-| `lib/domain/staff/Role.ts` | `Role.test.ts` | Enum: teacher, subject-lead, gatsby-lead, asdan-coordinator, head |
+| Entity | PK | SK | GSI1PK | GSI1SK |
+|--------|----|----|--------|--------|
+| UserAccount | `TENANT#{tenantId}` | `ACCOUNT#{id}` | `EMAIL#{email}` | `ACCOUNT` |
+| UserAccount (invite) | `TENANT#{tenantId}` | `ACCOUNT#{id}` | `INVITE#{token}` | `ACCOUNT` |
+| StaffMember | `TENANT#{tenantId}` | `STAFF#{id}` | `EMAIL#{email}` | `STAFF` |
+| Student | `TENANT#{tenantId}` | `STUDENT#{id}` | `TOKEN#{accessToken}` | `STUDENT` |
+| BenchmarkProgress | `TENANT#{tenantId}` | `PROGRESS#{studentId}` | - | - |
 
-### 1.2 Entity
+#### Phase C: Environment Configuration (P0)
 
-| File | Test First | Implementation |
-|------|------------|----------------|
-| `lib/domain/staff/StaffMember.ts` | `StaffMember.test.ts` | id, schoolId, name, email, roles[] |
+| Variable | Purpose | Where |
+|----------|---------|-------|
+| `NEXTAUTH_SECRET` | JWT signing | Amplify env vars |
+| `NEXTAUTH_URL` | Callback URLs | Amplify env vars |
+| `DYNAMODB_TABLE_NAME` | Table name | Amplify env vars |
+| `AWS_REGION` | Region | Amplify env vars |
+| `S3_EVIDENCE_BUCKET` | Evidence uploads | Amplify env vars |
 
-### 1.3 Repository
+#### Phase D: First Staff Creation (P0)
 
-| File | Test First | Implementation |
-|------|------------|----------------|
-| `lib/domain/staff/StaffRepository.ts` | Interface | findById, findBySchool, findByRole |
-| `lib/domain/staff/InMemoryStaffRepository.ts` | `InMemoryStaffRepository.test.ts` | In-memory implementation |
+After DynamoDB is connected:
 
-### 1.4 Mock Data
+```bash
+# Create first admin user
+npm run invite:staff -- \
+  --email admin@school.uk \
+  --name "School Administrator" \
+  --role head \
+  --tenant TENANT-ARNFIELD
+```
 
-| File | Implementation |
-|------|----------------|
-| `lib/mock-data/staff.ts` | Sample staff for demo school |
+**Note:** The `invite:staff` CLI script creates data. For this to work with DynamoDB:
+1. Update `scripts/invite-staff.ts` to use DynamoDB repositories
+2. Or create an API endpoint for staff invitations
 
-**Deliverables:**
-- [ ] StaffId value object with validation
-- [ ] Role enum with all 5 roles
-- [ ] StaffMember entity with role checking
-- [ ] Repository interface and in-memory implementation
-- [ ] All tests passing
+#### Phase E: Amplify Deployment Verification
 
----
-
-## Phase 2: Activity Domain
-
-Activities created by Gatsby Lead, completed by students.
-
-### 2.1 Value Objects
-
-| File | Test First | Implementation |
-|------|------------|----------------|
-| `lib/domain/activity/ActivityId.ts` | `ActivityId.test.ts` | Format: `ACT-{uuid}` |
-| `lib/domain/activity/EvidenceRequirement.ts` | `EvidenceRequirement.test.ts` | type, description, mandatory |
-| `lib/domain/activity/ActivityStatus.ts` | - | Enum: draft, active, archived |
-
-### 2.2 Entity
-
-| File | Test First | Implementation |
-|------|------------|----------------|
-| `lib/domain/activity/SchoolActivity.ts` | `SchoolActivity.test.ts` | See PRD for fields |
-
-### 2.3 Repository
-
-| File | Test First | Implementation |
-|------|------------|----------------|
-| `lib/domain/activity/SchoolActivityRepository.ts` | Interface | findById, findBySchool, findByBenchmark |
-| `lib/domain/activity/InMemorySchoolActivityRepository.ts` | `InMemory...test.ts` | In-memory implementation |
-
-**Deliverables:**
-- [ ] ActivityId value object
-- [ ] SchoolActivity entity with Gatsby + ASDAN mapping
-- [ ] Repository with filtering by benchmark
-- [ ] All tests passing
+| Check | Expected |
+|-------|----------|
+| Frontend builds | ✅ |
+| API routes work | ✅ |
+| Auth flow works | Login → Session |
+| DynamoDB queries work | Data persists |
 
 ---
 
-## Phase 3: Evidence Domain
+### Agent 2: UI & Teacher Portal Track
 
-Student submissions and Gatsby Lead reviews.
+**Goal:** Build the Teacher Portal for staff to manage content.
 
-### 3.1 Value Objects
+**Status:** ✅ **COMPLETE** - All phases implemented with 107 tests passing.
 
-| File | Test First | Implementation |
-|------|------------|----------------|
-| `lib/domain/evidence/EvidenceId.ts` | `EvidenceId.test.ts` | Format: `EVD-{uuid}` |
-| `lib/domain/evidence/SubmissionStatus.ts` | - | Enum: pending, approved, rejected |
+**Prerequisite:** Can start immediately with InMemory repositories. Will work with real DynamoDB once Agent 1 completes Phase B.
 
-### 3.2 Entity
+#### Phase A: Teacher Portal Layout ✅ COMPLETE
 
-| File | Test First | Implementation |
-|------|------------|----------------|
-| `lib/domain/evidence/EvidenceSubmission.ts` | `EvidenceSubmission.test.ts` | studentId, activityId, content, status, review |
+| Task | Test File | Implementation | Tests |
+|------|-----------|----------------|-------|
+| Teacher layout | `app/teacher/layout.test.tsx` | `app/teacher/layout.tsx` | 14 |
+| Teacher navigation | Component test | Sidebar nav component | ✅ |
+| Session check | Integration test | Redirect if not staff | ✅ |
 
-### 3.3 Repository
+#### Phase B: Teacher Dashboard ✅ COMPLETE
 
-| File | Test First | Implementation |
-|------|------------|----------------|
-| `lib/domain/evidence/EvidenceRepository.ts` | Interface | findById, findByStudent, findPending |
-| `lib/domain/evidence/InMemoryEvidenceRepository.ts` | `InMemory...test.ts` | In-memory implementation |
+| Task | Test File | Implementation | Tests |
+|------|-----------|----------------|-------|
+| Dashboard page | `app/teacher/page.test.tsx` | `app/teacher/page.tsx` | 13 |
+| Gatsby overview card | Component test | Shows 8 benchmarks with progress | ✅ |
+| Quick stats | Component test | Student count, pending evidence | ✅ |
+| Recent activity | Component test | Latest submissions | ✅ |
 
-**Deliverables:**
-- [ ] EvidenceId value object
-- [ ] EvidenceSubmission entity with status workflow
-- [ ] Repository with pending queue query
-- [ ] All tests passing
+**Dashboard Mockup:**
+```
+┌─────────────────────────────────────────────────┐
+│ Level: Teacher Portal                     [👤]  │
+├────────┬────────────────────────────────────────┤
+│        │ Welcome, Sarah Mitchell                │
+│ Dashboard │                                      │
+│ Students  │ ┌─────────────────────────────────┐  │
+│ Activities│ │ Gatsby Compliance               │  │
+│ Evidence  │ │ ███████░░░ 68%                  │  │
+│           │ └─────────────────────────────────┘  │
+│           │                                      │
+│           │ ┌─────────┐ ┌─────────┐ ┌─────────┐ │
+│           │ │ 24      │ │ 12      │ │ 5       │ │
+│           │ │ Students│ │ Pending │ │ Today   │ │
+│           │ └─────────┘ └─────────┘ └─────────┘ │
+└───────────┴─────────────────────────────────────┘
+```
 
----
+#### Phase C: Student Heatmap ✅ COMPLETE
 
-## Phase 4: ASDAN Domain
+| Task | Test File | Implementation | Tests |
+|------|-----------|----------------|-------|
+| Students list page | `app/teacher/students/page.test.tsx` | `app/teacher/students/page.tsx` | 11 |
+| StudentHeatmap component | Inline in page | Grid: students × benchmarks | ✅ |
+| Add student button | Component test | Opens add modal (placeholder) | ✅ |
+| Color-coded cells | Component test | Based on completion % | ✅ |
 
-Qualification tracking visible to students.
+**Heatmap Design:**
+```
+┌─────────────────────────────────────────────────────────────┐
+│ Students                           [+ Add Student]          │
+├──────────────┬────┬────┬────┬────┬────┬────┬────┬────┬──────┤
+│ Name         │ GB1│ GB2│ GB3│ GB4│ GB5│ GB6│ GB7│ GB8│ Total│
+├──────────────┼────┼────┼────┼────┼────┼────┼────┼────┼──────┤
+│ Eagle JS     │ ██ │ ██ │ ░░ │ ██ │ ░░ │ ░░ │ ██ │ ░░ │  50% │
+│ Hawk AB      │ ██ │ ██ │ ██ │ ██ │ ░░ │ ██ │ ██ │ ░░ │  75% │
+│ Falcon CD    │ ░░ │ ██ │ ░░ │ ░░ │ ░░ │ ░░ │ ░░ │ ░░ │  13% │
+└──────────────┴────┴────┴────┴────┴────┴────┴────┴────┴──────┘
+```
 
-### 4.1 Reference Data
+#### Phase D: Add Student Flow (Deferred)
 
-| File | Implementation |
-|------|----------------|
-| `lib/reference-data/asdan-units.ts` | All ASDAN units with metadata |
-| `lib/reference-data/asdan-qualifications.ts` | CoPE, Employability, etc. |
+| Task | Status | Notes |
+|------|--------|-------|
+| Add student modal | Placeholder | Opens "Coming soon" modal |
+| Create student API | Not started | Requires DynamoDB |
+| Generate access token | Not started | Requires DynamoDB |
 
-### 4.2 Value Objects
+#### Phase E: Activity Management ✅ COMPLETE
 
-| File | Test First | Implementation |
-|------|------------|----------------|
-| `lib/domain/asdan/ASDANUnitId.ts` | `ASDANUnitId.test.ts` | Format: `ASDAN-{code}` |
+| Task | Test File | Implementation | Tests |
+|------|-----------|----------------|-------|
+| Activities list | `app/teacher/activities/page.test.tsx` | `app/teacher/activities/page.tsx` | 12 |
+| Create activity form | `app/teacher/activities/create/page.test.tsx` | `app/teacher/activities/create/page.tsx` | 14 |
+| Benchmark selector | Inline | Multi-select GB1-GB8 checkboxes | ✅ |
+| ASDAN unit selector | Inline | Optional dropdown | ✅ |
+| Evidence requirements | Inline | Photo/voice/document checkboxes | ✅ |
 
-### 4.3 Entity
+#### Phase F: Evidence Review ✅ COMPLETE
 
-| File | Test First | Implementation |
-|------|------------|----------------|
-| `lib/domain/asdan/ASDANProgress.ts` | `ASDANProgress.test.ts` | studentId, qualificationId, unitsCompleted[] |
-
-### 4.4 Repository
-
-| File | Test First | Implementation |
-|------|------------|----------------|
-| `lib/domain/asdan/ASDANProgressRepository.ts` | Interface | findByStudent |
-| `lib/domain/asdan/InMemoryASDANProgressRepository.ts` | `InMemory...test.ts` | In-memory implementation |
-
-**Deliverables:**
-- [ ] ASDAN reference data (units, qualifications)
-- [ ] ASDANProgress entity
-- [ ] Calculation of % complete
-- [ ] All tests passing
-
----
-
-## Phase 5: Application Services
-
-Use cases orchestrating domain operations.
-
-### 5.1 Activity Management
-
-| Service | Test First | Description |
-|---------|------------|-------------|
-| `CreateSchoolActivity` | `CreateSchoolActivity.test.ts` | Gatsby Lead creates activity |
-| `UpdateSchoolActivity` | `UpdateSchoolActivity.test.ts` | Edit activity |
-| `ArchiveSchoolActivity` | `ArchiveSchoolActivity.test.ts` | Archive (soft delete) |
-| `GetSchoolFramework` | `GetSchoolFramework.test.ts` | All activities by benchmark |
-
-### 5.2 Evidence Management
-
-| Service | Test First | Description |
-|---------|------------|-------------|
-| `SubmitEvidence` | `SubmitEvidence.test.ts` | Student submits evidence |
-| `ReviewEvidence` | `ReviewEvidence.test.ts` | Gatsby Lead approves/rejects |
-| `GetPendingEvidence` | `GetPendingEvidence.test.ts` | Queue for review |
-
-### 5.3 Progress Calculation
-
-| Service | Test First | Description |
-|---------|------------|-------------|
-| `GetStudentCareerPlan` | `GetStudentCareerPlan.test.ts` | Student's view (no Gatsby) |
-| `GetGatsbyCompliance` | `GetGatsbyCompliance.test.ts` | Educator's view (full Gatsby) |
-| `GetSchoolHeatmap` | `GetSchoolHeatmap.test.ts` | Grid of students × benchmarks |
-| `GetASDANProgress` | `GetASDANProgress.test.ts` | Student's qualification progress |
-
-**Deliverables:**
-- [ ] All application services with tests
-- [ ] Clear separation of student view vs educator view
-- [ ] ASDAN progress calculation
-- [ ] Gatsby compliance calculation
+| Task | Test File | Implementation | Tests |
+|------|-----------|----------------|-------|
+| Evidence queue | `app/teacher/evidence/page.test.tsx` | `app/teacher/evidence/page.tsx` | 20 |
+| Review page | `app/teacher/evidence/[id]/page.test.tsx` | `app/teacher/evidence/[id]/page.tsx` | 23 |
+| Filter by status | Component test | All/Pending/Approved/Rejected tabs | ✅ |
+| Approve button | Integration test | Green button, calls API | ✅ |
+| Reject with feedback | Integration test | Red button, includes feedback | ✅ |
 
 ---
 
-## Phase 6: Student Portal Refactor
+## What's Already Built
 
-Update existing student portal to hide Gatsby.
+### Authentication (Complete - 99 tests)
 
-### 6.1 Page Updates
+| Component | Location | Status |
+|-----------|----------|--------|
+| `AuthenticateStaff` use case | `lib/application/AuthenticateStaff.ts` | Complete |
+| `InviteStaff` use case | `lib/application/InviteStaff.ts` | Complete |
+| `SetupStaffAccount` use case | `lib/application/SetupStaffAccount.ts` | Complete |
+| `AuthenticateStudent` use case | `lib/application/AuthenticateStudent.ts` | Complete |
+| NextAuth configuration | `lib/auth/options.ts` | Complete |
+| Setup page | `app/(auth)/setup/[token]/page.tsx` | Complete (15 tests) |
+| Login page | `app/(auth)/login/page.tsx` | Complete (12 tests) |
+| Setup API | `app/api/setup/[token]/route.ts` | Complete |
+| Route middleware | `middleware.ts` | Complete |
+| CLI invite script | `scripts/invite-staff.ts` | Complete |
 
-| File | Changes |
-|------|---------|
-| `app/student/page.tsx` | Remove GB references, show stats |
-| `app/student/layout.tsx` | Update navigation |
-| `app/student/activities/page.tsx` | New: Activity list grouped by theme |
-| `app/student/activities/[id]/page.tsx` | New: Activity detail + evidence submission |
-| `app/student/qualifications/page.tsx` | New: ASDAN progress |
+### Auth Flow Diagram
 
-### 6.2 Component Updates
+```
+Staff Registration:
+Admin runs CLI → Creates StaffMember + UserAccount with invite token
+                        │
+                        ▼
+              Magic link generated: /setup/{token}
+                        │
+                        ▼
+Staff clicks link → Setup page (email readonly, set password)
+                        │
+                        ▼
+              Password saved → Auto-login via NextAuth
+                        │
+                        ▼
+              Redirect to /teacher
 
-| Component | Changes |
-|-----------|---------|
-| `BenchmarkCard.tsx` | Rename to ActivityCard, remove GB styling |
-| New: `QualificationCard.tsx` | ASDAN qualification progress |
-| New: `EvidenceForm.tsx` | Text + URL submission |
-| New: `SubmissionStatus.tsx` | Pending/approved/rejected indicator |
+Staff Login:
+Visit /login → Email + Password form
+                        │
+                        ▼
+         AuthenticateStaff validates credentials
+                        │
+                        ▼
+              NextAuth creates session (JWT)
+                        │
+                        ▼
+              Redirect to /teacher
 
-### 6.3 Hooks
+Student Access:
+Admin generates token → Student receives /s/{token}
+                        │
+                        ▼
+        AuthenticateStudent validates token
+                        │
+                        ▼
+         Session created (anonymized view)
+                        │
+                        ▼
+              Student portal loads
+```
 
-| Hook | Description |
+### Domain Layer (Complete - 849+ tests)
+
+All repositories have InMemory implementations ready for DynamoDB swap:
+
+| Domain | Entity | Repository | Tests |
+|--------|--------|------------|-------|
+| Student | `Student` | `StudentRepository` | ✅ |
+| Staff | `StaffMember` | `StaffRepository` | ✅ |
+| Auth | `UserAccount` | `UserAccountRepository` | ✅ |
+| Benchmark | `BenchmarkProgress` | `BenchmarkProgressRepository` | ✅ |
+| Activity | `SchoolActivity` | `SchoolActivityRepository` | ✅ |
+| Evidence | `EvidenceSubmission` | `EvidenceRepository` | ✅ |
+| ASDAN | `ASDANProgress` | `ASDANProgressRepository` | ✅ |
+
+### Application Services (Complete)
+
+| Service | Purpose | Tests |
+|---------|---------|-------|
+| `GetStudentProgress` | Student dashboard data | ✅ |
+| `GetBenchmarkHeatmap` | Teacher heatmap data | ✅ |
+| `CompleteActivity` | Mark activity done | ✅ |
+| `CreateSchoolActivity` | Gatsby Lead creates | ✅ |
+| `SubmitEvidence` | Student uploads | ✅ |
+| `ReviewEvidence` | Gatsby Lead approves | ✅ |
+| `GetASDANProgress` | ASDAN qualification progress | ✅ |
+
+### Infrastructure (CDK - Not Yet Deployed)
+
+| Stack | File | Resources |
+|-------|------|-----------|
+| SharedStack | `infrastructure/lib/shared-stack.ts` | DynamoDB, S3 |
+| CICDStack | `infrastructure/lib/cicd-stack.ts` | GitHub OIDC |
+
+### Frontend Hosting
+
+| Service | Status | Notes |
+|---------|--------|-------|
+| AWS Amplify | Configured | `amplify.yml` exists |
+| Domain | Not set | Need `level.arnfield.uk` |
+
+---
+
+## Files to Delete (Already Done)
+
+These mock data files were deleted when moving to production:
+
+- ~~`lib/mock-data/students.ts`~~
+- ~~`lib/mock-data/staff.ts`~~
+- ~~`lib/mock-data/index.ts`~~
+- ~~`lib/infrastructure/seeded-repositories.ts`~~
+- ~~`lib/infrastructure/seeded-repositories.test.ts`~~
+
+---
+
+## Repository Singleton Pattern
+
+All components now use shared repository instances from `lib/infrastructure/repositories.ts`:
+
+```typescript
+import { InMemoryStudentRepository } from '../domain/student/InMemoryStudentRepository';
+import { InMemoryBenchmarkProgressRepository } from '../domain/benchmark/InMemoryBenchmarkProgressRepository';
+import { InMemoryStaffRepository } from '../domain/staff/InMemoryStaffRepository';
+import { InMemoryUserAccountRepository } from '../domain/auth/InMemoryUserAccountRepository';
+
+export const studentRepository = new InMemoryStudentRepository();
+export const progressRepository = new InMemoryBenchmarkProgressRepository();
+export const staffRepository = new InMemoryStaffRepository();
+export const userAccountRepository = new InMemoryUserAccountRepository();
+```
+
+**To switch to DynamoDB:**
+1. Create `lib/infrastructure/dynamodb/` implementations
+2. Update `repositories.ts` imports to use DynamoDB versions
+3. All consumers automatically use new implementations
+
+---
+
+## Parallel Work Coordination
+
+### No Conflicts Expected
+
+| Agent 1 (Infrastructure) | Agent 2 (UI) |
+|--------------------------|--------------|
+| `infrastructure/` | `app/teacher/` |
+| `lib/infrastructure/dynamodb/` | `components/teacher/` |
+| `scripts/` | `app/api/teacher/` |
+| Environment config | UI tests |
+
+### Sync Points
+
+1. **After Agent 1 Phase B:** Agent 2 tests will use real DynamoDB
+2. **After Agent 1 Phase D:** First staff user exists, can test full flow
+
+---
+
+## Post-Deployment Checklist
+
+- [ ] CDK stacks deployed
+- [ ] DynamoDB table has data
+- [ ] Amplify app builds successfully
+- [ ] Login flow works end-to-end
+- [ ] First staff user can access /teacher
+- [ ] Teacher Portal dashboard loads
+- [ ] Student heatmap displays
+
+---
+
+## Timeline
+
+**Agent 1 (Infrastructure):** Phases A-E (In Progress)
+**Agent 2 (UI):** Phases A-F ✅ **COMPLETE**
+
+Both can run in parallel. Agent 2 can start immediately with InMemory repos.
+
+---
+
+## Teacher Portal Files Created (Agent 2)
+
+### Pages
+
+| File | Tests | Description |
+|------|-------|-------------|
+| `app/teacher/layout.tsx` | 14 | Sidebar navigation, session display |
+| `app/teacher/page.tsx` | 13 | Dashboard with Gatsby compliance overview |
+| `app/teacher/students/page.tsx` | 11 | Student heatmap grid |
+| `app/teacher/activities/page.tsx` | 12 | Activity list with filters |
+| `app/teacher/activities/create/page.tsx` | 14 | Create activity form |
+| `app/teacher/evidence/page.tsx` | 20 | Evidence review queue |
+| `app/teacher/evidence/[id]/page.tsx` | 23 | Individual evidence review |
+
+### Hooks
+
+| File | Description |
 |------|-------------|
-| `useStudentCareerPlan` | Fetches career plan (no Gatsby) |
-| `useASDANProgress` | Fetches ASDAN progress |
-| `useSubmitEvidence` | Submits evidence |
+| `lib/hooks/useTeacherDashboard.ts` | Dashboard data (compliance, stats) |
+| `lib/hooks/useStudentHeatmap.ts` | Student × benchmark progress grid |
+| `lib/hooks/useActivities.ts` | Activity list with filtering |
+| `lib/hooks/useEvidenceQueue.ts` | Evidence submissions queue |
+| `lib/hooks/useEvidenceDetail.ts` | Single evidence submission details |
 
-**Deliverables:**
-- [ ] Student dashboard shows activities, not benchmarks
-- [ ] ASDAN progress visible
-- [ ] Evidence submission working
-- [ ] All tests passing
+### API Routes (Placeholders)
 
----
+| File | Method | Description |
+|------|--------|-------------|
+| `/api/teacher/dashboard` | GET | Dashboard data |
+| `/api/teacher/heatmap` | GET | Student heatmap data |
+| `/api/teacher/activities` | GET/POST | List/create activities |
+| `/api/teacher/evidence` | GET | Evidence queue |
+| `/api/teacher/evidence/[id]` | GET/POST | View/review evidence |
 
-## Phase 7: Teacher Portal
-
-New portal for Gatsby Lead and educators.
-
-### 7.1 Pages
-
-| File | Test First | Description |
-|------|------------|-------------|
-| `app/teacher/page.tsx` | `page.test.tsx` | Dashboard with GB compliance |
-| `app/teacher/layout.tsx` | - | Teacher portal layout |
-| `app/teacher/students/page.tsx` | `students.test.tsx` | Student heatmap |
-| `app/teacher/students/[id]/page.tsx` | - | Individual student detail |
-| `app/teacher/activities/page.tsx` | `activities.test.tsx` | Activity management |
-| `app/teacher/activities/create/page.tsx` | `create.test.tsx` | Create activity form |
-| `app/teacher/activities/[id]/page.tsx` | - | Edit activity |
-| `app/teacher/evidence/page.tsx` | `evidence.test.tsx` | Evidence review queue |
-| `app/teacher/evidence/[id]/page.tsx` | - | Single evidence review |
-
-### 7.2 Components
-
-| Component | Description |
-|-----------|-------------|
-| `GatsbyOverview.tsx` | 8 benchmarks with % |
-| `StudentHeatmap.tsx` | Grid of students × benchmarks |
-| `EvidenceQueue.tsx` | Pending submissions list |
-| `ActivityForm.tsx` | Create/edit activity |
-| `BenchmarkSelector.tsx` | Multi-select for benchmarks |
-| `ASDANUnitSelector.tsx` | Auto-suggest ASDAN units |
-
-### 7.3 Hooks
-
-| Hook | Description |
-|------|-------------|
-| `useGatsbyCompliance` | School-wide compliance data |
-| `useStudentHeatmap` | All students' benchmark status |
-| `usePendingEvidence` | Evidence queue |
-| `useCreateActivity` | Create activity mutation |
-| `useReviewEvidence` | Approve/reject mutation |
-
-**Deliverables:**
-- [ ] Gatsby dashboard functional
-- [ ] Student heatmap working
-- [ ] Activity creation working
-- [ ] Evidence review queue working
-- [ ] All tests passing
-
----
-
-## Phase 8: Management Portal
-
-Executive dashboard for School Head.
-
-### 8.1 Pages
-
-| File | Test First | Description |
-|------|------------|-------------|
-| `app/admin/page.tsx` | `page.test.tsx` | Executive dashboard |
-| `app/admin/layout.tsx` | - | Admin layout |
-| `app/admin/reports/page.tsx` | `reports.test.tsx` | Export page |
-
-### 8.2 Components
-
-| Component | Description |
-|-----------|-------------|
-| `SchoolOverview.tsx` | High-level stats |
-| `BenchmarkCoverage.tsx` | % of students per benchmark |
-| `TrendChart.tsx` | Progress over time |
-| `ExportButton.tsx` | PDF/CSV generation |
-
-**Deliverables:**
-- [ ] Executive dashboard
-- [ ] School-wide heatmap
-- [ ] PDF export working
-- [ ] All tests passing
-
----
-
-## Phase 9: Integration & Polish
-
-Final integration and quality assurance.
-
-### 9.1 Tasks
-
-- [ ] End-to-end flow: Create activity → Student completes → Evidence approved → Compliance updated
-- [ ] Permission enforcement across all routes
-- [ ] Error boundaries and loading states
-- [ ] Accessibility audit (WCAG 2.1 AA)
-- [ ] Mobile responsiveness verification
-- [ ] Performance optimization
-
-### 9.2 Mock Data
-
-- [ ] Realistic demo data for all entities
-- [ ] Different schools to demonstrate multi-tenant
-- [ ] Students at various progress levels
-
----
-
-## File Structure (Final)
-
-```
-lib/
-├── domain/
-│   ├── staff/
-│   │   ├── StaffId.ts
-│   │   ├── StaffId.test.ts
-│   │   ├── Role.ts
-│   │   ├── StaffMember.ts
-│   │   ├── StaffMember.test.ts
-│   │   ├── StaffRepository.ts
-│   │   ├── InMemoryStaffRepository.ts
-│   │   └── InMemoryStaffRepository.test.ts
-│   ├── activity/
-│   │   ├── ActivityId.ts
-│   │   ├── ActivityId.test.ts
-│   │   ├── SchoolActivity.ts
-│   │   ├── SchoolActivity.test.ts
-│   │   ├── SchoolActivityRepository.ts
-│   │   ├── InMemorySchoolActivityRepository.ts
-│   │   └── InMemorySchoolActivityRepository.test.ts
-│   ├── evidence/
-│   │   ├── EvidenceId.ts
-│   │   ├── EvidenceId.test.ts
-│   │   ├── EvidenceSubmission.ts
-│   │   ├── EvidenceSubmission.test.ts
-│   │   ├── EvidenceRepository.ts
-│   │   ├── InMemoryEvidenceRepository.ts
-│   │   └── InMemoryEvidenceRepository.test.ts
-│   ├── asdan/
-│   │   ├── ASDANUnitId.ts
-│   │   ├── ASDANUnitId.test.ts
-│   │   ├── ASDANProgress.ts
-│   │   ├── ASDANProgress.test.ts
-│   │   ├── ASDANProgressRepository.ts
-│   │   ├── InMemoryASDANProgressRepository.ts
-│   │   └── InMemoryASDANProgressRepository.test.ts
-│   └── (existing: student/, benchmark/, tenant/)
-├── application/
-│   ├── CreateSchoolActivity.ts
-│   ├── CreateSchoolActivity.test.ts
-│   ├── SubmitEvidence.ts
-│   ├── SubmitEvidence.test.ts
-│   ├── ReviewEvidence.ts
-│   ├── ReviewEvidence.test.ts
-│   ├── GetStudentCareerPlan.ts
-│   ├── GetStudentCareerPlan.test.ts
-│   ├── GetGatsbyCompliance.ts
-│   ├── GetGatsbyCompliance.test.ts
-│   ├── GetSchoolHeatmap.ts
-│   ├── GetSchoolHeatmap.test.ts
-│   └── (existing services)
-├── hooks/
-│   ├── useStudentCareerPlan.ts
-│   ├── useASDANProgress.ts
-│   ├── useGatsbyCompliance.ts
-│   ├── useStudentHeatmap.ts
-│   └── (existing hooks)
-├── reference-data/
-│   ├── gatsby-benchmarks.ts (existing)
-│   ├── asdan-units.ts
-│   └── asdan-qualifications.ts
-└── mock-data/
-    ├── students.ts (existing)
-    ├── staff.ts
-    ├── activities.ts
-    └── evidence.ts
-
-app/
-├── student/
-│   ├── page.tsx (refactored)
-│   ├── layout.tsx
-│   ├── activities/
-│   │   ├── page.tsx
-│   │   └── [id]/page.tsx
-│   └── qualifications/page.tsx
-├── teacher/
-│   ├── page.tsx
-│   ├── layout.tsx
-│   ├── students/
-│   │   ├── page.tsx
-│   │   └── [id]/page.tsx
-│   ├── activities/
-│   │   ├── page.tsx
-│   │   ├── create/page.tsx
-│   │   └── [id]/page.tsx
-│   └── evidence/
-│       ├── page.tsx
-│       └── [id]/page.tsx
-└── admin/
-    ├── page.tsx
-    ├── layout.tsx
-    └── reports/page.tsx
-
-components/
-├── ui/ (existing)
-├── shared/ (existing)
-├── student/
-│   ├── ActivityCard.tsx
-│   ├── QualificationCard.tsx
-│   ├── EvidenceForm.tsx
-│   └── SubmissionStatus.tsx
-├── teacher/
-│   ├── GatsbyOverview.tsx
-│   ├── StudentHeatmap.tsx
-│   ├── EvidenceQueue.tsx
-│   ├── ActivityForm.tsx
-│   └── BenchmarkSelector.tsx
-└── admin/
-    ├── SchoolOverview.tsx
-    ├── BenchmarkCoverage.tsx
-    └── ExportButton.tsx
-```
-
----
-
-## Execution Guidelines
-
-### TDD Workflow (Every Feature)
-
-1. **Write test first** - Test file before implementation
-2. **Run test** - Verify it fails (RED)
-3. **Write minimum code** - Just enough to pass
-4. **Run test** - Verify it passes (GREEN)
-5. **Refactor** - Only if needed, run tests again
-6. **Commit** - Small, focused commits
-
-### Todo Structure (Every Phase)
-
-```
-✅ - Write StaffId.test.ts (failing)
-✅ - Implement StaffId (make tests pass)
-✅ - Write Role.test.ts (failing)
-✅ - Implement Role (make tests pass)
-...
-```
-
-### Commit Messages
-
-Single line, conventional format:
-```
-test: add StaffId value object tests
-feat: implement StaffId value object
-test: add StaffMember entity tests
-feat: implement StaffMember entity
-```
-
----
-
-## Dependencies
-
-No new dependencies required. Using existing:
-- Next.js 14 (App Router)
-- TypeScript
-- Tailwind CSS
-- Jest + Testing Library
-
----
-
-## Timeline Estimates
-
-Phases are sequential, each depending on the previous:
-
-| Phase | Description | Estimated Effort |
-|-------|-------------|------------------|
-| 1 | Staff Domain | Small |
-| 2 | Activity Domain | Medium |
-| 3 | Evidence Domain | Medium |
-| 4 | ASDAN Domain | Small |
-| 5 | Application Services | Medium |
-| 6 | Student Portal Refactor | Medium |
-| 7 | Teacher Portal | Large |
-| 8 | Management Portal | Medium |
-| 9 | Integration & Polish | Medium |
+**Note:** Hooks currently use demo data fallback. API routes will be wired once DynamoDB is connected.
 
 ---
 

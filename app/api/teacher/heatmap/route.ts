@@ -1,31 +1,31 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { CohortId } from '@/lib/domain/tenant/CohortId';
+import { LocationId } from '@/lib/domain/tenant/LocationId';
 import { GetBenchmarkHeatmap } from '@/lib/application/GetBenchmarkHeatmap';
-import { studentRepository, progressRepository } from '@/lib/infrastructure/seeded-repositories';
+import { studentRepository, progressRepository } from '@/lib/infrastructure/repositories';
 
 const getBenchmarkHeatmap = new GetBenchmarkHeatmap(studentRepository, progressRepository);
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const cohortIdParam = searchParams.get('cohortId');
+    const locationIdParam = searchParams.get('locationId');
 
-    if (!cohortIdParam) {
+    if (!locationIdParam) {
       return NextResponse.json(
-        { error: 'cohortId query parameter is required' },
+        { error: 'locationId query parameter is required' },
         { status: 400 }
       );
     }
 
-    if (!CohortId.isValid(cohortIdParam)) {
+    if (!LocationId.isValid(locationIdParam)) {
       return NextResponse.json(
-        { error: `Invalid cohort ID: ${cohortIdParam}` },
+        { error: `Invalid location ID: ${locationIdParam}` },
         { status: 400 }
       );
     }
 
-    const cohortId = CohortId.create(cohortIdParam);
-    const result = await getBenchmarkHeatmap.execute(cohortId);
+    const locationId = LocationId.create(locationIdParam);
+    const result = await getBenchmarkHeatmap.execute(locationId);
 
     return NextResponse.json({
       rows: result.rows.map(row => ({

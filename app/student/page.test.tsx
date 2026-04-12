@@ -22,7 +22,9 @@ const mockStudentProgress = {
     id: 'STUDENT-001',
     firstName: 'Emma',
     lastName: 'Wilson',
+    subdivisionId: 'SUB-EAGLE',
   },
+  displayName: 'Eagle EW', // Anonymized: subdivision + initials
   benchmarks: [
     { benchmarkId: 'GB1', percentComplete: 75, status: 'in-progress', activitiesCompleted: [] },
     { benchmarkId: 'GB2', percentComplete: 50, status: 'in-progress', activitiesCompleted: [] },
@@ -44,9 +46,10 @@ jest.mock('@/lib/hooks/useStudentProgress', () => ({
 
 describe('StudentDashboard', () => {
   describe('header section', () => {
-    it('displays greeting with student name', () => {
+    it('displays greeting with anonymized display name', () => {
       render(<StudentDashboard />);
-      expect(screen.getByRole('heading', { name: /hi, emma/i })).toBeInTheDocument();
+      // Students see their anonymized name (subdivision + initials), never their full name
+      expect(screen.getByRole('heading', { name: /hi, eagle ew/i })).toBeInTheDocument();
     });
 
     it('shows overall progress percentage', () => {

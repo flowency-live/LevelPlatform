@@ -1,14 +1,25 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import LoginPage from './page';
 
-// Mock the router
+const mockPush = jest.fn();
+const mockSignIn = jest.fn();
+
 jest.mock('next/navigation', () => ({
   useRouter: () => ({
-    push: jest.fn(),
+    push: mockPush,
   }),
 }));
 
+jest.mock('next-auth/react', () => ({
+  signIn: (...args: unknown[]) => mockSignIn(...args),
+}));
+
 describe('LoginPage', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockSignIn.mockResolvedValue({ ok: false });
+  });
+
   describe('rendering', () => {
     it('renders login card', () => {
       render(<LoginPage />);
@@ -73,6 +84,8 @@ describe('LoginPage', () => {
 
   describe('form submission', () => {
     it('shows loading state during submission', async () => {
+      mockSignIn.mockImplementation(() => new Promise(() => {})); // Never resolves
+
       render(<LoginPage />);
       const emailInput = screen.getByLabelText('Email');
       const passwordInput = screen.getByLabelText('Password');
@@ -85,6 +98,50 @@ describe('LoginPage', () => {
 
       await waitFor(() => {
         expect(submitButton).toHaveAttribute('aria-busy', 'true');
+      });
+    });
+
+    it('redirects to teacher portal on successful login', async () => {
+      mockSignIn.mockResolvedValue({ ok: true });
+
+      render(<LoginPage />);
+      const emailInput = screen.getByLabelText('Email');
+      const passwordInput = screen.getByLabelText('Password');
+
+      fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
+      fireEvent.change(passwordInput, { target: { value: 'password123' } });
+
+      const submitButton = screen.getByRole('button', { name: /sign in/i });
+      fireEvent.click(submitButton);
+
+      await waitFor(() => {
+        expect(mockSignIn).toHaveBeenCalledWith('credentials', {
+          email: 'test@example.com',
+          password: 'password123',
+          redirect: false,
+        });
+      });
+
+      await waitFor(() => {
+        expect(mockPush).toHaveBeenCalledWith('/teacher');
+      });
+    });
+
+    it('shows error on invalid credentials', async () => {
+      mockSignIn.mockResolvedValue({ ok: false });
+
+      render(<LoginPage />);
+      const emailInput = screen.getByLabelText('Email');
+      const passwordInput = screen.getByLabelText('Password');
+
+      fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
+      fireEvent.change(passwordInput, { target: { value: 'wrongpassword' } });
+
+      const submitButton = screen.getByRole('button', { name: /sign in/i });
+      fireEvent.click(submitButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(/invalid email or password/i)).toBeInTheDocument();
       });
     });
   });

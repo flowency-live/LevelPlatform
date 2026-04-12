@@ -5,10 +5,10 @@ import { Student } from '../domain/student/Student';
 import { StudentId } from '../domain/student/StudentId';
 import { BenchmarkProgress } from '../domain/benchmark/BenchmarkProgress';
 import { BenchmarkId } from '../domain/benchmark/BenchmarkId';
-import { ActivityId } from '../domain/benchmark/ActivityId';
+import { BenchmarkActivityId } from '../domain/benchmark/BenchmarkActivityId';
 import { TenantId } from '../domain/tenant/TenantId';
 import { LocationId } from '../domain/tenant/LocationId';
-import { CohortId } from '../domain/tenant/CohortId';
+import { SubdivisionId } from '../domain/tenant/SubdivisionId';
 
 describe('GetStudentProgress', () => {
   let studentRepository: InMemoryStudentRepository;
@@ -25,8 +25,7 @@ describe('GetStudentProgress', () => {
       email: `${id.toLowerCase()}@school.uk`,
       tenantId: TenantId.create('TENANT-ARNFIELD'),
       locationId: LocationId.create('LOC-EAST'),
-      cohortId: CohortId.create('COHORT-Y10-2025'),
-      yearGroup: 10,
+      subdivisionId: SubdivisionId.create('SUB-EAGLE'),
       createdAt: now,
       updatedAt: now,
     });
@@ -36,7 +35,7 @@ describe('GetStudentProgress', () => {
     const completedActivities = [];
     for (let i = 1; i <= completedCount; i++) {
       completedActivities.push({
-        activityId: ActivityId.create(`${benchmarkId}-0${i}`),
+        activityId: BenchmarkActivityId.create(`${benchmarkId}-0${i}`),
         completedAt: now,
       });
     }
