@@ -1,4 +1,4 @@
-import { ReviewOutcome, InvalidReviewOutcomeError } from './ReviewOutcome';
+import { ReviewOutcome } from './ReviewOutcome';
 import { SubmissionStatus } from './SubmissionStatus';
 import { StaffId } from '../staff/StaffId';
 
@@ -42,29 +42,6 @@ describe('ReviewOutcome', () => {
 
       expect(outcome.status).toBe(SubmissionStatus.Rejected);
       expect(outcome.feedback).toBe('Please provide clearer evidence');
-    });
-
-    it('throws for Pending status', () => {
-      expect(() =>
-        ReviewOutcome.create({
-          status: SubmissionStatus.Pending as SubmissionStatus.Approved,
-          reviewedBy: reviewerStaffId,
-          reviewedAt,
-        })
-      ).toThrow(InvalidReviewOutcomeError);
-    });
-
-    it('throws for Pending status with descriptive error', () => {
-      try {
-        ReviewOutcome.create({
-          status: SubmissionStatus.Pending as SubmissionStatus.Approved,
-          reviewedBy: reviewerStaffId,
-          reviewedAt,
-        });
-      } catch (error) {
-        expect(error).toBeInstanceOf(InvalidReviewOutcomeError);
-        expect((error as Error).message).toContain('Pending');
-      }
     });
 
     it('trims whitespace from feedback', () => {

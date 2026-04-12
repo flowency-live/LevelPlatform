@@ -29,12 +29,6 @@ export class ReviewOutcome {
   }
 
   static create(props: ReviewOutcomeProps): ReviewOutcome {
-    if (props.status === SubmissionStatus.Pending) {
-      throw new InvalidReviewOutcomeError(
-        'Review outcome cannot have Pending status. Must be Approved or Rejected.'
-      );
-    }
-
     const trimmedFeedback = props.feedback?.trim();
     const feedback = trimmedFeedback && trimmedFeedback.length > 0 ? trimmedFeedback : undefined;
 

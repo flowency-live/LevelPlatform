@@ -49,9 +49,9 @@ export default function TeacherLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const { data: session } = useSession();
+  const session = useSession();
 
-  const userName = session?.user?.name || 'Staff';
+  const userName = session?.data?.user?.name || 'Staff';
   const userInitials = getInitials(userName);
 
   return (
@@ -79,7 +79,7 @@ export default function TeacherLayout({
           <div className="flex flex-col">
             <span className="text-[14px] font-semibold text-white leading-none">{userName}</span>
             <span className="text-[12px] text-white/60 font-normal mt-0.5">
-              {session?.user?.roles?.[0] || 'Staff'}
+              {session?.data?.user?.roles?.[0] || 'Staff'}
             </span>
           </div>
         </div>

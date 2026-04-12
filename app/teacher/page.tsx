@@ -5,10 +5,10 @@ import { useSession } from 'next-auth/react';
 import { useTeacherDashboard } from '@/lib/hooks/useTeacherDashboard';
 
 export default function TeacherDashboard() {
-  const { data: session } = useSession();
+  const session = useSession();
   const dashboard = useTeacherDashboard();
 
-  const userName = session?.user?.name?.split(' ')[0] || 'Teacher';
+  const userName = session?.data?.user?.name?.split(' ')[0] || 'Teacher';
 
   if (!dashboard) {
     return (
