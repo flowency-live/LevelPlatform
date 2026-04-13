@@ -64,8 +64,5 @@ export const config = {
   matcher: [
     '/teacher/:path*',
     '/admin/:path*',
-    '/student/:path*',
-    '/api/:path*',
-    '/((?!_next/static|_next/image|favicon.ico).*)',
   ],
 };
